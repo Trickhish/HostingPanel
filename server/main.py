@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
-from routes.course import router as course_router
+from routes.user import router as user_router
 
 MAX_LINE_LENGTH = 65
 
@@ -28,11 +28,11 @@ async def lifespan(app: FastAPI):
     #asyncio.create_task(test_events())
 
 
-    print("🟢 CentralServer is up and ready\n")
+    print("🟢 Server is up and ready\n")
 
     yield
 
-    print("⛔ Shutting down the CentralServer...\n")
+    print("⛔ Shutting down the Server...\n")
 
 
 
@@ -92,7 +92,8 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(course_router, prefix="/course", tags=["Authentication"])
+app.include_router(user_router, prefix="/user", tags=["Authentication"])
+
 
 
 if (dbg):
@@ -108,7 +109,7 @@ if (dbg):
 # Endpoints
 @app.get("/")
 def none_handler():
-    return("SignUtil API is running")
+    return("Hosting API is running")
 
 
 
