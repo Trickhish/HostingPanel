@@ -1,1 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'styles/reset';
+
+@font-face {
+    font-family: nunito;
+    src: url('assets/nunito-variable.ttf');
+}
+
+body {
+    font-family: nunito;
+
+    background: linear-gradient(
+        135deg,
+        #a8d5d5 0%,
+        #b8dfe5 25%,
+        #c8d5e8 50%,
+        #d0c8e8 75%,
+        #b8b5d8 100%
+    );
+}

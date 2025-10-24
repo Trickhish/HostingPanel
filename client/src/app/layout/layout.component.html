@@ -1,0 +1,42 @@
+<div class="app-container">
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+    <div class="logo">
+        <h2>WP Panel</h2>
+    </div>
+    
+    <nav class="nav-menu">
+        <a routerLink="/dashboard" 
+            routerLinkActive="active"
+            class="nav-item">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+        </a>
+        
+        
+    </nav>
+    
+    <div class="sidebar-footer">
+        <div class="user-info">
+        <span class="icon">👤</span>
+        <span>Admin User</span>
+        </div>
+        <button class="logout-btn">Logout</button>
+    </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+    <header class="top-bar">
+        <h1>{{ pageTitle }}</h1>
+        <div class="header-actions">
+        <button class="icon-btn">🔔</button>
+        <button class="icon-btn">❓</button>
+        </div>
+    </header>
+    
+    <div class="content-area">
+        <router-outlet></router-outlet>
+    </div>
+    </main>
+</div>
