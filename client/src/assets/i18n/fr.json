@@ -1,0 +1,8 @@
+{
+    "pages": {
+        "dashboard": "Accueil",
+        "websites": "Mes sites",
+        "settings": "Paramètres",
+        "logout": "Se déconnecter"
+    }
+}

@@ -1,4 +1,5 @@
 @use 'styles/reset';
+@use 'styles/vars.scss';
 
 @font-face {
     font-family: nunito;
@@ -7,13 +8,4 @@
 
 body {
     font-family: nunito;
-
-    background: linear-gradient(
-        135deg,
-        #a8d5d5 0%,
-        #b8dfe5 25%,
-        #c8d5e8 50%,
-        #d0c8e8 75%,
-        #b8b5d8 100%
-    );
 }

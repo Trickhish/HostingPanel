@@ -1,0 +1,197 @@
+main {
+    background-color: #1f2a36;
+    height: 100%;
+    width: 100%;
+    padding:0;
+    margin:0;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+input, select {
+    background-color: var(--inp-bg);
+    border: solid 1px var(--inp-bd);
+    border-radius: 8px;
+    padding: 9px 7px;
+    font-size: 1em;
+    color: var(--font-color);
+    display: block;
+    margin: 7px 5px;
+    transition: all .2s ease-in-out;
+    max-width: calc(100% - 14px);
+}
+
+body {
+    
+    background-size: 100% 100% !important;
+    background-attachment: fixed;
+
+    background: var(--lg-bg);
+    height: 100dvh;
+    width: 100dvw;
+    padding:0;
+    margin: 0;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#login_ctn {
+    background-color: var(--ctn-bg);
+    box-shadow: var(--ctn-shadow);
+
+    /*position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;*/
+    height: 50%;
+    width: 50%;
+    min-width: 600px;
+    border-radius: 1.5em;
+    text-align: center;
+    max-width: 670px;
+
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+}
+
+#login_form {
+    width: max-content;
+    margin: 0 auto;
+    height: max-content;
+}
+
+#logo {
+    height:5em;
+    aspect-ratio: 1/1;
+    margin-bottom: 1em;
+    margin-top: -1em;
+}
+
+#pass_ctn {
+    position:relative;
+}
+#pass {
+    width: calc(100% - 4em);
+    padding-right: 2em;
+}
+#pass_eye {
+    position: absolute;
+    color: var(--main-color);
+    right: -13px;
+    font-size: 1em;
+    top: calc(50%);
+    translate: -100% -50%;
+    cursor: pointer;
+    padding: 11px 5px;
+}
+#pass_eye.fa-eye-slash {
+    right: -16px;
+}
+
+#valbt {
+    width:100%;
+    transition: all .2s ease-in-out;
+    margin-top: 1em;
+}
+
+#valbt:hover {
+    /*background-color: #0a9cc9;*/
+}
+
+#err {
+    max-width: 50%;
+    margin-bottom: 0;
+    max-height:0;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+}
+#err.active {
+    max-height: 5em;
+    opacity: 1;
+}
+#err i {
+    margin-right: 5px;
+}
+
+#dark_mode {
+    fill: var(--font-color);
+    height: 3em;
+    width: 3em;
+    aspect-ratio: 1 / 1;
+    position: fixed;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+
+    transition: all .2s ease-in-out;
+    transform-origin: center;
+
+    rotate:-90deg;
+    opacity:0;
+    /*pointer-events: none;*/
+    z-index: 99;
+}
+
+#dark_mode.active {
+    rotate:0deg;
+    opacity:1;
+    z-index: 100;
+}
+
+#light_mode {
+    fill: black;
+    position: fixed;
+    height: 3em;
+    width: 3em;
+    top: 5px;
+    right: 5px;
+    fill: var(--font-color);
+    cursor: pointer;
+
+    transition: all .2s ease-in-out;
+    transform-origin: center;
+
+    rotate:90deg;
+    opacity:0;
+    /*pointer-events: none;*/
+    z-index: 99;
+}
+
+#light_mode.active {
+    rotate:0deg;
+    opacity:1;
+    z-index: 100;
+}
+
+input {
+    margin: 7px auto;
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+    #login_ctn {
+        width: 90%;
+        min-width: 0;
+        height: 50%;
+        max-width: 100%;
+
+        /*position: relative;
+        translate: none;
+        top: 25%;
+        left: 5%;*/
+    }
+}

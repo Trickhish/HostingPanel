@@ -1,0 +1,8 @@
+{
+    "pages": {
+        "dashboard": "Dashboard",
+        "websites": "Websites",
+        "settings": "Settings",
+        "logout": "Logout"
+    }
+}

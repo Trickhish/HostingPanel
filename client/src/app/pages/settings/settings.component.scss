@@ -1,0 +1,30 @@
+#settings_ctn {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    width: 60%;
+    margin:0 auto;
+}
+
+.setting {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+
+    h3 {
+        color: var(--color);
+        padding:0;
+        margin:0;
+    }
+
+    nz-switch {
+
+    }
+}

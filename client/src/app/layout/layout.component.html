@@ -1,42 +1,56 @@
 <div class="app-container">
     <!-- Left Sidebar -->
-    <aside class="sidebar">
-    <div class="logo">
-        <h2>WP Panel</h2>
-    </div>
-    
-    <nav class="nav-menu">
-        <a routerLink="/dashboard" 
-            routerLinkActive="active"
-            class="nav-item">
-        <span class="icon">📊</span>
-        <span>Dashboard</span>
-        </a>
-        
-        
-    </nav>
-    
-    <div class="sidebar-footer">
-        <div class="user-info">
-        <span class="icon">👤</span>
-        <span>Admin User</span>
+    <aside style="display:none;" class="sidebar extended">
+        <div class="logo">
+            <img id="logo_img" src="/assets/logo_trans.png" />
+            <h2>WP Panel</h2>
         </div>
-        <button class="logout-btn">Logout</button>
-    </div>
+
+        <i (click)="switchSidebar()" id="sidebar_rdbt" class="fa-solid fa-circle-chevron-right"></i>
+
+        <nav class="nav-menu">
+            <a (click)="linkClicked()" routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>{{ 'pages.dashboard' | translate }}</span>
+            </a>
+
+            <a (click)="linkClicked()" routerLink="/websites" routerLinkActive="active" class="nav-item">
+                <i class="fa-regular fa-newspaper"></i>
+                <span>{{ 'pages.websites' | translate }}</span>
+            </a>
+
+            
+
+            
+        </nav>
+
+        <div class="sidebar-footer">
+            <nav class="bottom-nav">
+                <a (click)="linkClicked()" routerLink="/settings" routerLinkActive="active" class="nav-item">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>{{ 'pages.settings' | translate }}</span>
+                </a>
+
+                <a (click)="linkClicked()" class="nav-item">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>{{ 'pages.logout' | translate }}</span>
+                </a>
+            </nav>
+        </div>
     </aside>
 
     <!-- Main Content Area -->
-    <main class="main-content">
-    <header class="top-bar">
-        <h1>{{ pageTitle }}</h1>
-        <div class="header-actions">
-        <button class="icon-btn">🔔</button>
-        <button class="icon-btn">❓</button>
+    <main (click)="mainClicked()" class="main-content">
+        <header class="top-bar">
+            <h1>{{ pageTitle }}</h1>
+            <div class="header-actions">
+                <button class="icon-btn">🔔</button>
+                <button class="icon-btn">❓</button>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <router-outlet></router-outlet>
         </div>
-    </header>
-    
-    <div class="content-area">
-        <router-outlet></router-outlet>
-    </div>
     </main>
 </div>

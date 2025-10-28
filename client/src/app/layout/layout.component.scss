@@ -1,24 +1,122 @@
 .app-container {
     display: flex;
     height: 100vh;
-    background-color: #f5f5f5;
+    /*background-color: #f5f5f5;*/
+    background: var(--bg);
 }
 
 /* Sidebar Styles */
-.sidebar {
-    width: 250px;
-    background-color: white; /* #1e293b */
+aside.sidebar {
+    width: 60px;
+    background-color: var(--sidebar-bg); /* #1e293b */
     color: white;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     z-index:9;
+    position: relative;
+    transition: all .2s ease-in-out;
+    /*
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    border-right: solid 2px #7697a13d;
+    */
+
+    &.extended {
+        width: 250px;
+
+        #sidebar_rdbt {
+            transform: rotate(180deg);
+        }
+
+        .nav-item {
+            span {
+                display:block;
+            }
+        }
+
+        .logo {
+            h2 {
+                display: inline-block;
+                pointer-events: all;
+                opacity: 1;
+                width: max-content;
+            }
+
+            #logo_img {
+                margin: 5px 10px 5px;
+            }
+        }
+
+        .sidebar-footer {
+            padding: 5px 20px;
+        }
+    }
+
+    .nav-item {
+        span {
+            display:none;
+        }
+    }
+
+    .sidebar-footer {
+        padding:0 0 5px 18px;
+
+        nav.bottom-nav {
+            max-width:100%;
+            overflow: hidden;
+
+            .nav-item {
+                padding-left:0;
+            }
+        }
+    }
+    
+
+
+    #sidebar_rdbt {
+        position: absolute;
+        top: 2.5em;
+        right: 0;
+        font-size: 1.6em;
+        cursor: pointer;
+        translate: 50% 0;
+        color: var(--main-color);
+        transition: all .2s ease-in-out;
+        color: var(--accent);
+    }
+
+    .logo {
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin: 5px 10px 5px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-content: center;
+        align-items: center;
+        justify-content: flex-start;
+
+        h2 {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            height:1.5rem;
+            max-height:1.5rem;
+            transition: all .2s ease-in-out;
+            font-size: 1.5rem;
+        }
+
+        #logo_img {
+            height: 3em;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            padding: 0;
+            transition: all .2s ease-in-out;
+        }
+    }
 }
 
-.logo {
-    padding: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
+
 
 .logo h2 {
     margin: 0;
@@ -36,27 +134,28 @@
     display: flex;
     align-items: center;
     padding: 12px 20px;
-    color: #94a3b8;
+    color: #7b8799; /*  #94a3b8 */
     text-decoration: none;
     transition: all 0.3s;
     cursor: pointer;
+
+    &:hover {
+        color: #3f597f;
+    }
+    
+    &.active {
+        color: #186684;
+        font-weight: bold;
+    }
+
+    i {
+        margin-right: 12px;
+        font-size: 1.5rem;
+    }
 }
 
-.nav-item:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
 
-.nav-item.active {
-    background-color: #3b82f6;
-    color: white;
-    border-left: 4px solid #60a5fa;
-}
 
-.nav-item .icon {
-    margin-right: 12px;
-    font-size: 20px;
-}
 
 .sidebar-footer {
     border-top: 1px solid rgba(255,255,255,0.1);
@@ -95,12 +194,13 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--bg);
 }
 
 .top-bar {
-    background-color: white;
+    background-color: transparent;
     padding: 20px 30px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /*box-shadow: 0 2px 4px rgba(0,0,0,0.1);*/
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -138,18 +238,55 @@
     overflow-y: auto;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .sidebar {
-    width: 60px;
+
+
+
+
+/* Mobile */
+@media (max-width: 900px) {
+    main.main-content::after {
+        content: "";
+        height: 100dvh;
+        width: 100dvh;
+        background-color: #00000045;
+        backdrop-filter: blur(1px);
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        opacity: 0;
+        pointer-events: none;
+        transition: all .2s ease-in-out;
     }
 
-    .nav-item span:not(.icon) {
-    display: none;
+    aside.sidebar {
+        position:fixed;
+        left: 0;
+        height: 100dvh;
+        translate: -100%;
+
+        &.extended {
+            translate: 0;
+
+            i#sidebar_rdbt {
+                top: 1rem;
+                right: 0;
+            }
+
+            & + main.main-content::after{
+                opacity: 1;
+                pointer-events: all;
+            }
+        }
+
+        i#sidebar_rdbt {
+            top: 1rem;
+            right: -1.7rem;
+            font-size:2rem;
+        }
     }
 
-    .logo h2,
-    .sidebar-footer .user-info span:not(.icon) {
-    display: none;
+    header.top-bar {
+        margin-left: 2rem;
     }
 }

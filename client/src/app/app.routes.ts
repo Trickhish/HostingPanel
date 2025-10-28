@@ -23,11 +23,11 @@ export const routes: Routes = [
                 path: 'dashboard',
                 loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
             },
-            /*{
-                path: 'websites',
-                loadComponent: () => import('./pages/websites/websites.component').then(m => m.WebsitesComponent)
-            },
             {
+                path: 'settings',
+                loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
+            },
+            /*{
                 path: 'websites/create',
                 loadComponent: () => import('./pages/websites/website-create/website-create.component').then(m => m.WebsiteCreateComponent)
             },
