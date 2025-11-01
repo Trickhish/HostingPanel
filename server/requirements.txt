@@ -2,3 +2,6 @@ uvicorn
 fastapi
 diskcache
 requests
+alembic
+pymysql
+dotenv
