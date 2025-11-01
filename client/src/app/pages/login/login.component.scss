@@ -1,5 +1,5 @@
 main {
-    background-color: #1f2a36;
+    background-color: var(--bg);
     height: 100%;
     width: 100%;
     padding:0;
@@ -73,6 +73,10 @@ body {
     width: max-content;
     margin: 0 auto;
     height: max-content;
+
+    input {
+        width: 100%;
+    }
 }
 
 #logo {

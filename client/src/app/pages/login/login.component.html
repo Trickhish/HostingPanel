@@ -6,10 +6,10 @@
         <p id="err"></p>
 
         <form id="login_form" method="POST">
-            <input onkeydown="resetErr();" onchange="resetErr();" type="text" id="user" autocomplete="username" name="username" placeholder="Nom d'utilisateur" required />
+            <input (keydown)="resetErr()" (change)="resetErr()" type="text" id="user" autocomplete="username" name="username" placeholder="Nom d'utilisateur" required />
             <div id="pass_ctn">
-                <input onkeydown="resetErr();" onchange="resetErr();" type="password" id="pass" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
-                <i onclick="showPass();" id='pass_eye' class="fa-regular fa-eye"></i>
+                <input (keydown)="resetErr()" (change)="resetErr()" type="password" id="pass" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
+                <i (click)="showPass()" id='pass_eye' class="fa-regular fa-eye"></i>
             </div>
 
             <button type="submit" id="valbt">Continuer</button>
