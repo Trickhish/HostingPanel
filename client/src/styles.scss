@@ -9,3 +9,17 @@
 body {
     font-family: nunito;
 }
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 9px;
+    font-size: 1em;
+    color: var(--accent-text);
+    display: block;
+    margin: 7px auto;
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+    background-color: var(--accent);
+    backface-visibility: hidden;
+}

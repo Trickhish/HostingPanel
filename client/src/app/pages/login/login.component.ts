@@ -43,4 +43,19 @@ export class LoginComponent {
           document.getElementById("pass_eye")!.classList.add("fa-eye");
       }
   }
+
+  ngOnInit() {
+    document.getElementById("login_form")?.addEventListener("submit", (e)=>{
+        console.log("REAL SUBMIT");
+
+        
+
+        //e.stopPropagation();
+        e.preventDefault();
+    });
+  }
+
+  submit() {
+    
+  }
 }

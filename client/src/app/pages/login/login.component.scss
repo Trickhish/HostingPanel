@@ -1,5 +1,6 @@
 main {
     background-color: var(--bg);
+    background: var(--lg-bg);
     height: 100%;
     width: 100%;
     padding:0;
@@ -73,6 +74,7 @@ body {
     width: max-content;
     margin: 0 auto;
     height: max-content;
+    min-width: 230px;
 
     input {
         width: 100%;
