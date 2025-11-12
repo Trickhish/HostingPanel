@@ -28,7 +28,7 @@ from src.database import Base,db_url
 from src.models import *
 target_metadata = Base.metadata
 
-config.set_main_option("sqlalchemy.url", db_url)
+config.set_main_option("sqlalchemy.url", db_url.replace("%", "%%"))
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

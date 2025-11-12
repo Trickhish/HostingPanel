@@ -8,6 +8,8 @@ import os
 from urllib.parse import quote_plus,quote
 from contextlib import contextmanager
 
+from src.models import *
+
 load_dotenv()
 
 db_user = "hostingPanel"
@@ -24,14 +26,16 @@ db_url = URL.create(
     database=db_name
 ).render_as_string(hide_password=False)
 
-#print(db_url)
+print(db_url)
+
+#db_url = db_url.replace("%", "%%")
 
 engine = create_engine(db_url, connect_args=())
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # autoflush : load changes before queries
 # autocommit : commit changes after queries
 
-#AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 Base = declarative_base()
 
 #def get_db():
@@ -52,3 +56,10 @@ def get_db():
         raise e
     finally:
         db.close()
+
+with get_db() as db:
+    existing_user = db.query(User).filter(
+        (User.email == "sqs")
+    ).first()
+
+    print(existing_user)

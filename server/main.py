@@ -13,6 +13,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
 from routes.user import router as user_router
+from routes.auth import router as auth_router
 
 MAX_LINE_LENGTH = 65
 
@@ -92,7 +93,9 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(user_router, prefix="/user", tags=["Authentication"])
+app.include_router(user_router, prefix="/user", tags=["User"])
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+
 
 
 

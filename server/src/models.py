@@ -6,9 +6,10 @@ from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException, Depends, Header, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse, FileResponse
 
-from sqlalchemy import DateTime, Table, create_engine, Column, Integer, String, Boolean, ForeignKey, select
+from sqlalchemy import DateTime, Table, create_engine, Column, Integer, String, Boolean, ForeignKey, select, Enum as SQLEnum, Text
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.sql import func
 
 from typing import List, Optional
 from contextlib import asynccontextmanager
@@ -17,42 +18,104 @@ from typing import List
 from uuid import uuid4
 import json
 import asyncio
+import enum
+
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from src.database import Base
 
 def jsonObject(inst):
     return({column.name: getattr(inst, column.name) for column in inst.__table__.columns})
 
-class Track(Base):
-    __tablename__ = "tracks"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    artist = Column(String(255), nullable=False)
-    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
 
-    room = relationship("Room", back_populates="tracks", foreign_keys=[room_id])
-
-class Room(Base):
-    __tablename__ = "rooms"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), unique=True, nullable=False)
-    password = Column(String(255), nullable=True)
-    admin_id = Column(Integer, nullable=False)
-    current_track_id = Column(Integer, ForeignKey("tracks.id", use_alter=True, name="fk_rooms_current_track"), nullable=True)
-    votes_to_skip = Column(Integer, default=0)
-    is_playing = Column(Boolean, default=False)
-    
-    tracks = relationship("Track", back_populates="room", foreign_keys=[Track.room_id])
-    current_track = relationship("Track", backref="current_room", foreign_keys=[current_track_id])
+class UserRole(enum.Enum):
+    ADMIN = "admin"
+    CLIENT = "client"
 
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(255), nullable=False)
+    first_name = Column(String(100))
+    last_name = Column(String(100))
+
     password = Column(String(255), nullable=False)
-    room_id = Column(Integer, ForeignKey("rooms.id", name="fk_tracks_room"), nullable=True)
     email = Column(String(255), unique=True, nullable=True)
+
     creation_date = Column(DateTime, default=datetime.utcnow)
+    last_login = Column(DateTime, nullable=True)
+    last_login_ip = Column(String(45), nullable=True)
+
+    role = Column(SQLEnum(UserRole), default=UserRole.CLIENT, nullable=False)
+    is_verified = Column(Boolean, default=False, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    locked_until = Column(DateTime, nullable=True)
+    failed_login_attempts = Column(Integer, default=0)
+
+    websites = relationship("Website", back_populates="user", cascade="all, delete-orphan")
+
+
+    def set_password(self, password: str):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password, password)
+    
+    def is_locked(self) -> bool:
+        if self.locked_until is None:
+            return False
+        return datetime.utcnow() < self.locked_until
+    
+    def is_admin(self) -> bool:
+        return self.role == UserRole.ADMIN
+    
+    def reset_failed_login(self) -> bool:
+        self.failed_login_attempts = 0
+        return(True)
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'company_name': self.company_name,
+            'phone': self.phone,
+            'role': self.role.value,
+            'is_active': self.is_active,
+            'is_verified': self.is_verified,
+            'last_login_at': self.last_login_at.isoformat() if self.last_login_at else None,
+            'created_at': self.created_at.isoformat(),
+        }
+
+
+class UserSession(Base):
+    """Track user sessions for security"""
+    __tablename__ = "user_sessions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False, index=True)
+    
+    # Session data
+    session_token = Column(String(255), unique=True, nullable=False, index=True)
+    ip_address = Column(String(45))
+    user_agent = Column(String(500))
+    
+    # Timestamps
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    last_activity_at = Column(DateTime, default=func.now(), nullable=False)
+    
+    # Relationships
+    user = relationship("User", back_populates="sessions")
+    
+    def is_expired(self) -> bool:
+        """Check if session is expired"""
+        return datetime.utcnow() > self.expires_at
+    
+    def __repr__(self):
+        return f"<UserSession(id={self.id}, user_id={self.user_id})>"
+
 
 class Token(Base):
     __tablename__ = "tokens"
@@ -61,24 +124,253 @@ class Token(Base):
     creation_date = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-class Unit(Base):
-    __tablename__ = "units"
-    id = Column(String(255), primary_key=True, index=True)
-    name = Column(String(255), nullable=True)
-    online = Column(Boolean, nullable=False, default=False)
-    owner_mail = Column(String(255), nullable=True)
-    owner_id = Column(Integer, nullable=True)
-    status = Column(String(255), nullable=False, default="empty")
-    # Possible values:
-    # - "playing"     -> Actively playing media
-    # - "paused"      -> Media loaded but currently paused
-    # - "empty"       -> No media loaded
-    # - "passthrough" -> Relaying external audio (no playback control)
-    # - "idle"      -> Online but idle (not playing or paused)
 
-room_rights = Table(
-    "room_rights",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("room_id", Integer, ForeignKey("rooms.id"), primary_key=True)
-)
+
+
+
+
+
+class WebsiteStatus(enum.Enum):
+    INSTALLING = "installing"
+    ACTIVE = "active"
+    SUSPENDED = "suspended"
+    ERROR = "error"
+    MIGRATING = "migrating"
+    DELETING = "deleting"
+
+
+class PHPVersion(enum.Enum):
+    PHP_74 = "7.4"
+    PHP_80 = "8.0"
+    PHP_81 = "8.1"
+    PHP_82 = "8.2"
+    PHP_83 = "8.3"
+
+class Website(Base):
+    __tablename__ = "websites"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(255), nullable=False)
+    status = Column(SQLEnum(WebsiteStatus), default=WebsiteStatus.INSTALLING, nullable=False, index=True)
+    site_path = Column(String(500), nullable=False)
+
+    disk_quota = Column(Integer, nullable=True)
+    disk_usage = Column(Integer, default=0, nullable=False)
+
+    backup_enabled = Column(Boolean, default=True, nullable=False)
+    backup_frequency = Column(String(20), default="daily", nullable=False)
+    last_backup_at = Column(DateTime, nullable=True)
+    backup_retention_days = Column(Integer, default=30, nullable=False)
+
+    created_at = Column(DateTime, default=datetime.now(), nullable=False)
+    suspended_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="websites")
+    logs = relationship("ActivityLog", back_populates="website", cascade="all, delete-orphan")
+    backups = relationship("Backup", back_populates="website", cascade="all, delete-orphan")
+
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'domain': self.domain,
+            'subdomain': self.subdomain,
+            'status': self.status.value,
+            'php_version': self.php_version.value,
+            'wp_version': self.wp_version,
+            'ssl_enabled': self.ssl_enabled,
+            'ssl_expiry': self.ssl_expiry.isoformat() if self.ssl_expiry else None,
+            'disk_usage': self.disk_usage,
+            'formatted_disk_usage': self.formatted_disk_usage,
+            'disk_quota': self.disk_quota,
+            'formatted_disk_quota': self.formatted_disk_quota,
+            'disk_usage_percentage': self.disk_usage_percentage,
+            'full_url': self.full_url,
+            'is_online': self.is_online,
+            'backup_enabled': self.backup_enabled,
+            'last_backup_at': self.last_backup_at.isoformat() if self.last_backup_at else None,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat(),
+        }
+
+
+
+
+
+
+
+class Backup(Base):
+    __tablename__ = "backups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    website_id = Column(Integer, ForeignKey("websites.id"), nullable=False, index=True)
+    website = relationship("Website", back_populates="backups")
+
+    size = Column(Integer, default=0, nullable=False)
+    is_encrypted = Column(Boolean, default=False, nullable=False)
+    expires_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.now(), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'website_id': self.website_id,
+            'filename': self.filename,
+            'type': self.type.value,
+            'status': self.status.value,
+            'storage_type': self.storage_type.value,
+            'size': self.size,
+            'formatted_size': self.formatted_size,
+            'checksum': self.checksum,
+            'is_encrypted': self.is_encrypted,
+            'includes_database': self.includes_database,
+            'includes_plugins': self.includes_plugins,
+            'includes_themes': self.includes_themes,
+            'includes_uploads': self.includes_uploads,
+            'error_message': self.error_message,
+            'duration_seconds': self.duration_seconds,
+            'can_restore': self.can_restore(),
+            'created_at': self.created_at.isoformat(),
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'expires_at': self.expires_at.isoformat() if self.expires_at else None,
+        }
+
+
+
+
+
+
+
+
+class ActivityType(enum.Enum):
+    """Types of activities to log"""
+    # User activities
+    USER_LOGIN = "user_login"
+    USER_LOGOUT = "user_logout"
+    USER_REGISTER = "user_register"
+    USER_PASSWORD_CHANGE = "user_password_change"
+    USER_PASSWORD_RESET = "user_password_reset"
+    USER_EMAIL_CHANGE = "user_email_change"
+    USER_PROFILE_UPDATE = "user_profile_update"
+    
+    # Website activities
+    WEBSITE_CREATE = "website_create"
+    WEBSITE_DELETE = "website_delete"
+    WEBSITE_SUSPEND = "website_suspend"
+    WEBSITE_ACTIVATE = "website_activate"
+    WEBSITE_UPDATE = "website_update"
+    WEBSITE_MIGRATE = "website_migrate"
+    
+    # WordPress activities
+    WP_INSTALL = "wp_install"
+    WP_UPDATE = "wp_update"
+    WP_PLUGIN_INSTALL = "wp_plugin_install"
+    WP_PLUGIN_UPDATE = "wp_plugin_update"
+    WP_PLUGIN_DELETE = "wp_plugin_delete"
+    WP_PLUGIN_ACTIVATE = "wp_plugin_activate"
+    WP_PLUGIN_DEACTIVATE = "wp_plugin_deactivate"
+    WP_THEME_INSTALL = "wp_theme_install"
+    WP_THEME_UPDATE = "wp_theme_update"
+    WP_THEME_DELETE = "wp_theme_delete"
+    WP_THEME_ACTIVATE = "wp_theme_activate"
+    
+    # Backup activities
+    BACKUP_CREATE = "backup_create"
+    BACKUP_DELETE = "backup_delete"
+    BACKUP_RESTORE = "backup_restore"
+    BACKUP_DOWNLOAD = "backup_download"
+    
+    # SSL activities
+    SSL_INSTALL = "ssl_install"
+    SSL_RENEW = "ssl_renew"
+    SSL_REMOVE = "ssl_remove"
+    
+    # Security activities
+    FIREWALL_ENABLE = "firewall_enable"
+    FIREWALL_DISABLE = "firewall_disable"
+    MALWARE_SCAN = "malware_scan"
+    MALWARE_DETECTED = "malware_detected"
+    MALWARE_CLEANED = "malware_cleaned"
+    
+    # System activities
+    PHP_VERSION_CHANGE = "php_version_change"
+    CACHE_CLEAR = "cache_clear"
+    CACHE_ENABLE = "cache_enable"
+    CACHE_DISABLE = "cache_disable"
+    
+    # Admin activities
+    ADMIN_SETTING_CHANGE = "admin_setting_change"
+    ADMIN_USER_CREATE = "admin_user_create"
+    ADMIN_USER_DELETE = "admin_user_delete"
+    ADMIN_USER_ROLE_CHANGE = "admin_user_role_change"
+
+class ActivityLevel(enum.Enum):
+    """Activity log levels"""
+    INFO = "info"
+    WARNING = "warning"
+    ERROR = "error"
+    CRITICAL = "critical"
+
+
+class ActivityLog(Base):
+    """Activity log for all system activities"""
+    __tablename__ = "activity_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    
+    # Foreign keys (nullable because not all activities relate to a specific entity)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    website_id = Column(Integer, ForeignKey("websites.id"), nullable=True, index=True)
+    
+    # Activity information
+    activity_type = Column(SQLEnum(ActivityType), nullable=False, index=True)
+    level = Column(SQLEnum(ActivityLevel), default=ActivityLevel.INFO, nullable=False)
+    
+    # Description
+    title = Column(String(500), nullable=False)
+    description = Column(Text, nullable=True)
+    
+    # Technical details
+    entity_type = Column(String(50), nullable=True)  # e.g., "website", "user", "backup"
+    entity_id = Column(Integer, nullable=True)
+    
+    # Request information
+    ip_address = Column(String(45), nullable=True)
+    user_agent = Column(String(500), nullable=True)
+    request_method = Column(String(10), nullable=True)  # GET, POST, etc.
+    request_path = Column(String(500), nullable=True)
+    
+    # Additional metadata (JSON)
+    data = Column(Text, nullable=True)  # Store as JSON string
+    
+    # Error information (for failed activities)
+    error_message = Column(Text, nullable=True)
+    error_code = Column(String(50), nullable=True)
+    stack_trace = Column(Text, nullable=True)
+    
+    # Timestamp
+    created_at = Column(DateTime, default=func.now(), nullable=False, index=True)
+    
+    # Relationships
+    user = relationship("User")
+    website = relationship("Website", back_populates="logs")
+    
+    def __repr__(self):
+        return f"<ActivityLog(id={self.id}, type='{self.activity_type.value}', level='{self.level.value}')>"
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'website_id': self.website_id,
+            'activity_type': self.activity_type.value,
+            'level': self.level.value,
+            'title': self.title,
+            'description': self.description,
+            'entity_type': self.entity_type,
+            'entity_id': self.entity_id,
+            'ip_address': self.ip_address,
+            'error_message': self.error_message,
+            'created_at': self.created_at.isoformat(),
+        }

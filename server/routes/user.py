@@ -4,7 +4,6 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 import json
 
-import src.api as api
 import src.utils as utl
 
 router = APIRouter()
