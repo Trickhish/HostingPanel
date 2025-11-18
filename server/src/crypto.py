@@ -1,5 +1,6 @@
 import jwt
 import os
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, Tuple
 from functools import wraps
@@ -228,10 +229,10 @@ class AuthService:
             user.last_login_ip = ip_address
             db.commit()
             
-            # Create session
+            # Create session with unique token
             session = UserSession(
                 user_id=user.id,
-                session_token=AuthService.generate_refresh_token(user.id),
+                session_token=secrets.token_urlsafe(32),  # Generate unique session token
                 ip_address=ip_address,
                 user_agent=user_agent,
                 expires_at=datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
