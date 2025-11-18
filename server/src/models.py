@@ -72,21 +72,27 @@ class User(Base):
     def reset_failed_login(self) -> bool:
         self.failed_login_attempts = 0
         return(True)
+
+    def increment_failed_login(self):
+        """Increment failed login attempts and lock account if threshold reached"""
+        self.failed_login_attempts += 1
+        # Lock account after 5 failed attempts for 30 minutes
+        if self.failed_login_attempts >= 5:
+            self.locked_until = datetime.utcnow() + timedelta(minutes=30)
     
     def to_dict(self):
         return {
             'id': self.id,
             'email': self.email,
-            'username': self.username,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'company_name': self.company_name,
-            'phone': self.phone,
             'role': self.role.value,
             'is_active': self.is_active,
             'is_verified': self.is_verified,
-            'last_login_at': self.last_login_at.isoformat() if self.last_login_at else None,
-            'created_at': self.created_at.isoformat(),
+            'last_login': self.last_login.isoformat() if self.last_login else None,
+            'last_login_ip': self.last_login_ip,
+            'creation_date': self.creation_date.isoformat() if self.creation_date else None,
+            'failed_login_attempts': self.failed_login_attempts,
         }
 
 
@@ -175,24 +181,17 @@ class Website(Base):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'domain': self.domain,
-            'subdomain': self.subdomain,
+            'name': self.name,
             'status': self.status.value,
-            'php_version': self.php_version.value,
-            'wp_version': self.wp_version,
-            'ssl_enabled': self.ssl_enabled,
-            'ssl_expiry': self.ssl_expiry.isoformat() if self.ssl_expiry else None,
+            'site_path': self.site_path,
             'disk_usage': self.disk_usage,
-            'formatted_disk_usage': self.formatted_disk_usage,
             'disk_quota': self.disk_quota,
-            'formatted_disk_quota': self.formatted_disk_quota,
-            'disk_usage_percentage': self.disk_usage_percentage,
-            'full_url': self.full_url,
-            'is_online': self.is_online,
             'backup_enabled': self.backup_enabled,
+            'backup_frequency': self.backup_frequency,
+            'backup_retention_days': self.backup_retention_days,
             'last_backup_at': self.last_backup_at.isoformat() if self.last_backup_at else None,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat(),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'suspended_at': self.suspended_at.isoformat() if self.suspended_at else None,
         }
 
 
@@ -217,23 +216,9 @@ class Backup(Base):
         return {
             'id': self.id,
             'website_id': self.website_id,
-            'filename': self.filename,
-            'type': self.type.value,
-            'status': self.status.value,
-            'storage_type': self.storage_type.value,
             'size': self.size,
-            'formatted_size': self.formatted_size,
-            'checksum': self.checksum,
             'is_encrypted': self.is_encrypted,
-            'includes_database': self.includes_database,
-            'includes_plugins': self.includes_plugins,
-            'includes_themes': self.includes_themes,
-            'includes_uploads': self.includes_uploads,
-            'error_message': self.error_message,
-            'duration_seconds': self.duration_seconds,
-            'can_restore': self.can_restore(),
-            'created_at': self.created_at.isoformat(),
-            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
             'expires_at': self.expires_at.isoformat() if self.expires_at else None,
         }
 

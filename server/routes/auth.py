@@ -50,12 +50,12 @@ class TokenResponse(BaseModel):
 class UserResponse(BaseModel):
     id: int
     email: str
-    username: str
     first_name: Optional[str]
     last_name: Optional[str]
     role: str
     is_active: bool
-    
+    is_verified: bool
+
     class Config:
         from_attributes = True
 

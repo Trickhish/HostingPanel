@@ -224,7 +224,7 @@ class AuthService:
             
             # Reset failed login attempts
             user.reset_failed_login()
-            user.last_login_at = datetime.utcnow()
+            user.last_login = datetime.utcnow()
             user.last_login_ip = ip_address
             db.commit()
             
