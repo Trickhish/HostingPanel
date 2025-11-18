@@ -128,6 +128,8 @@ def require_role(*roles: UserRole):
 
 @router.post("/register", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def register(data: RegisterRequest):
+    raise HTTPException(status_code=401, detail="Registering is disabled")
+
     """Register a new user"""
     try:
         user, access_token, refresh_token = AuthService.register_user(
