@@ -134,18 +134,30 @@ def none_handler():
 
 
 if (__name__=="__main__"):
-    print(f"🚀 Starting the SoundPool server on {clr.CYAN}http://{host}:{port}{clr.NONE}.\n")
+    # SSL configuration
+    use_ssl = True  # Set to True to enable SSL, False to disable
+    ssl_keyfile = os.path.join(wdir, "certs/key.pem") if use_ssl else None
+    ssl_certfile = os.path.join(wdir, "certs/cert.pem") if use_ssl else None
+
+    protocol = "https" if use_ssl else "http"
+    print(f"🚀 Starting the SoundPool server on {clr.CYAN}{protocol}://{host}:{port}{clr.NONE}.\n")
+
     if (dbg):
         print(f"⚠️ {clr.YELLOW}Warning{clr.NONE}, DEBUG mode is activated. \n{clr.LIGHT_RED}Do not use this mode for production!{clr.NONE}")
         pll = MAX_LINE_LENGTH+16
         print(f"{clr.YELLOW}╔{'═'*pll}{clr.NONE}")
 
-        for ll in [
+        debug_messages = [
             f"The number of workers was reduced to {clr.LIGHT_RED}{workersnb}{clr.NONE}",
             f"The CORS wildcard is activated.",
             f"The DEBUG middleware is activated.",
             f"The server will reload on changes in {clr.UNDERLINE}{wdir}{clr.NONE}"
-        ]:
+        ]
+
+        if use_ssl:
+            debug_messages.append(f"SSL enabled with {clr.LIGHT_RED}self-signed{clr.NONE} certificate")
+
+        for ll in debug_messages:
             if (len(ll) > MAX_LINE_LENGTH):
                 print(f"{clr.YELLOW}║{clr.NONE} ", end="")
 
@@ -157,13 +169,17 @@ if (__name__=="__main__"):
                     lcl=clr.lastUsed(ll[(MAX_LINE_LENGTH*i):(MAX_LINE_LENGTH*(i+1))])
             else:
                 print(f"{clr.YELLOW}║{clr.NONE} {ll}")
-        
+
         print(f"{clr.YELLOW}╚{'═'*pll}{clr.NONE}\n")
     else:
         if (workersnb<3):
             print(f"⚠️ {clr.YELLOW}Warning{clr.NONE}, for a production environment, {workersnb} workers might not be enough.")
         else:
             print(f"⛏️ Running {workersnb} workers")
+
+    if use_ssl:
+        print(f"🔒 SSL/HTTPS enabled\n")
+
     print("")
 
     uvicorn.run(
@@ -173,5 +189,7 @@ if (__name__=="__main__"):
         reload=dbg,
         workers=workersnb,
         log_level="warning",
-        access_log=dbg
+        access_log=dbg,
+        ssl_keyfile=ssl_keyfile,
+        ssl_certfile=ssl_certfile
     )
