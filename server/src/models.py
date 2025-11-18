@@ -52,6 +52,7 @@ class User(Base):
     failed_login_attempts = Column(Integer, default=0)
 
     websites = relationship("Website", back_populates="user", cascade="all, delete-orphan")
+    sessions = relationship("UserSession", back_populates="user", cascade="all, delete-orphan")
 
 
     def set_password(self, password: str):
@@ -94,7 +95,7 @@ class UserSession(Base):
     __tablename__ = "user_sessions"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     
     # Session data
     session_token = Column(String(255), unique=True, nullable=False, index=True)
