@@ -6,13 +6,13 @@
         <p id="err"></p>
 
         <form id="login_form" method="POST">
-            <input (keydown)="resetErr()" (change)="resetErr()" type="text" id="user" autocomplete="username" name="username" placeholder="Nom d'utilisateur" required />
+            <input (keydown)="resetErr()" (change)="resetErr()" [(ngModel)]="emailValue" type="text" id="email" autocomplete="mail" name="email" placeholder="Adresse Email" required />
             <div id="pass_ctn">
-                <input (keydown)="resetErr()" (change)="resetErr()" type="password" id="pass" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
+                <input (keydown)="resetErr()" (change)="resetErr()" [(ngModel)]="passwordValue" type="password" id="pass" name="password" autocomplete="current-password" placeholder="Mot de passe" required />
                 <i (click)="showPass()" id='pass_eye' class="fa-regular fa-eye"></i>
             </div>
 
-            <button (click)="submit()" type="submit" id="valbt">Continuer</button>
+            <button type="submit" id="valbt">Continuer</button>
         </form>
     </div>
 

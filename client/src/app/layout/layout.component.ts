@@ -1,16 +1,21 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthService } from '../services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-layout',
-  imports: [RouterModule, RouterOutlet, TranslateModule],
+  imports: [RouterModule, RouterOutlet, TranslateModule, CommonModule],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  constructor(private translate: TranslateModule) {
-    
+  constructor(
+    private translate: TranslateModule,
+    public authService: AuthService
+  ) {
+
   }
 
   pageTitle = "Layout";
@@ -60,6 +65,10 @@ export class LayoutComponent {
     if (extended && this.pageWidth <= 900) {
       this.switchSidebar(false);
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   ngOnInit() {

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { authGuard, guestGuard, adminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     // Redirect root to dashboard
@@ -9,15 +10,18 @@ export const routes: Routes = [
         pathMatch: 'full'
     },
 
+    // Public routes (only accessible when not authenticated)
     {
         path: 'login',
-        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
+        loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
+        canActivate: [guestGuard]
     },
 
-
+    // Protected routes (require authentication)
     {
         path: '',
         component: LayoutComponent,
+        canActivate: [authGuard],
         children: [
             {
                 path: 'dashboard',
@@ -41,21 +45,14 @@ export const routes: Routes = [
             },
             {
                 path: 'users',
-                loadComponent: () => import('./pages/users/users.component').then(m => m.UsersComponent)
-            },
-            {
-                path: 'settings',
-                loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
+                loadComponent: () => import('./pages/users/users.component').then(m => m.UsersComponent),
+                canActivate: [adminGuard]  // Admin only
             }*/
-
 
             {
                 path: '**',
                 loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
             }
         ]
-    },
-
-    
-    
+    }
 ];

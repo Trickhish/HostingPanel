@@ -108,6 +108,19 @@ if (dbg):
         allow_headers=["*"],  # Allows all headers
     )
     app.add_middleware(RequestLoggerMiddleware)
+else:
+    # Production CORS - only allow your frontend domain
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "https://hosting.austerfortia.fr",
+            "https://www.hosting.austerfortia.fr",
+            "https://api.hosting.austerfortia.fr"
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # Endpoints
 @app.get("/")
