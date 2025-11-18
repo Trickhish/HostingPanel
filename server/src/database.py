@@ -27,7 +27,7 @@ db_url = URL.create(
 #print(db_url)
 
 engine = create_engine(db_url, connect_args=())
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, expire_on_commit=False)
 # autoflush : load changes before queries
 # autocommit : commit changes after queries
 
