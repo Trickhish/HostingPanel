@@ -1,7 +1,9 @@
 {
     "pages": {
-        "dashboard": "Accueil",
-        "websites": "Mes sites",
+        "dashboard": "Tableau de bord",
+        "websites": "Sites Web",
+        "domains": "Domaines",
+        "hosting": "Hébergement",
         "settings": "Paramètres",
         "logout": "Se déconnecter"
     }

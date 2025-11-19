@@ -3,13 +3,6 @@ import { LayoutComponent } from './layout/layout.component';
 import { authGuard, guestGuard, adminGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-    // Redirect root to dashboard
-    {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full'
-    },
-
     // Public routes (only accessible when not authenticated)
     {
         path: 'login',
@@ -24,35 +17,36 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             {
+                path: '',
+                redirectTo: 'dashboard',
+                pathMatch: 'full'
+            },
+            {
                 path: 'dashboard',
                 loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent)
             },
             {
+                path: 'websites',
+                loadComponent: () => import('./pages/websites/websites.component').then(m => m.WebsitesComponent)
+            },
+            {
+                path: 'domains',
+                loadComponent: () => import('./pages/domains/domains.component').then(m => m.DomainsComponent)
+            },
+            {
+                path: 'hosting',
+                loadComponent: () => import('./pages/hosting/hosting.component').then(m => m.HostingComponent)
+            },
+            {
                 path: 'settings',
                 loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent)
-            },
-            /*{
-                path: 'websites/create',
-                loadComponent: () => import('./pages/websites/website-create/website-create.component').then(m => m.WebsiteCreateComponent)
-            },
-            {
-                path: 'websites/:id',
-                loadComponent: () => import('./pages/websites/website-detail/website-detail.component').then(m => m.WebsiteDetailComponent)
-            },
-            {
-                path: 'backups',
-                loadComponent: () => import('./pages/backups/backups.component').then(m => m.BackupsComponent)
-            },
-            {
-                path: 'users',
-                loadComponent: () => import('./pages/users/users.component').then(m => m.UsersComponent),
-                canActivate: [adminGuard]  // Admin only
-            }*/
-
-            {
-                path: '**',
-                loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
             }
         ]
+    },
+
+    // 404 - Must be last
+    {
+        path: '**',
+        loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
     }
 ];

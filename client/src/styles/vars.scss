@@ -3,19 +3,60 @@
 }
 
 :root {
+    // Original variables
     --accent: #186684;
     --accent-text: white;
 
-    --bg: light-dark(#f2f3f6, #1f2a36); /* #1f2a36 #13191f #12121e */
+    --bg: light-dark(#f2f3f6, #1f2a36);
     --lg-bg: linear-gradient(15deg, #1dc9a3 0%, #1d516e 50%, #06071c 100%) center;
-    --sidebar-bg: light-dark(#ffffff, #161921); /* #1d212a #1d212a #1d1d29 */
+    --sidebar-bg: light-dark(#ffffff, #161921);
 
     --color: light-dark(black, #e9e9e9);
     --ctn-bg: light-dark(#e5e5e5, #142332);
-    
+
     --inp-bg: light-dark(#ffffff, #202f3e);
     --inp-bd: light-dark(#cdcdcd, #404040);
 
     --ctn-shadow: 0 2px 3px 1px #00000080;
+
+    // Extended variables for pages - matching blue-tinted theme
+    --card-bg: light-dark(#ffffff, #1a2532);
+    --card-shadow: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.4));
+    --card-shadow-hover: light-dark(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6));
+
+    --text-primary: light-dark(#1a1a1a, #e8f0f7);
+    --text-secondary: light-dark(#666666, #9db4c9);
+    --text-tertiary: light-dark(#999999, #6b8099);
+
+    --border-color: light-dark(#dee2e6, #2d3a4a);
+    --border-light: light-dark(#f0f0f0, #252f3c);
+
+    --bg-secondary: light-dark(#f8f9fa, #1c2734);
+    --bg-tertiary: light-dark(#e9ecef, #212d3a);
+    --bg-hover: light-dark(#e9ecef, #253240);
+
+    // Gradients (same in both themes)
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --gradient-danger: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-warning: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+    --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+
+    // Status colors - harmonized with blue theme
+    --status-success: light-dark(#28a745, #5cd68d);
+    --status-success-bg: light-dark(#d4edda, #1a3828);
+    --status-success-text: light-dark(#155724, #9fe6c0);
+
+    --status-warning: light-dark(#ffc107, #ffb84d);
+    --status-warning-bg: light-dark(#fff3cd, #3d3020);
+    --status-warning-text: light-dark(#856404, #ffd280);
+
+    --status-danger: light-dark(#dc3545, #ff6b6b);
+    --status-danger-bg: light-dark(#f8d7da, #3d1f24);
+    --status-danger-text: light-dark(#721c24, #ffb3b3);
+
+    --status-info: light-dark(#2196f3, #4da6ff);
+    --status-info-bg: light-dark(#e7f3ff, #1a2e42);
+    --status-info-text: light-dark(#0c5460, #80c0ff);
 }
 

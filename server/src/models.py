@@ -360,3 +360,196 @@ class ActivityLog(Base):
             'error_message': self.error_message,
             'created_at': self.created_at.isoformat(),
         }
+
+
+class TaskType(enum.Enum):
+    """Types of background tasks"""
+    WEBSITE_CREATE = "website_create"
+    WEBSITE_DELETE = "website_delete"
+    WEBSITE_MIGRATE = "website_migrate"
+    BACKUP_CREATE = "backup_create"
+    BACKUP_RESTORE = "backup_restore"
+    SSL_INSTALL = "ssl_install"
+    SSL_RENEW = "ssl_renew"
+    WP_INSTALL = "wp_install"
+    WP_UPDATE = "wp_update"
+    DATABASE_OPTIMIZE = "database_optimize"
+
+class TaskStatus(enum.Enum):
+    """Task execution status"""
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+class Task(Base):
+    """Background task queue"""
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    website_id = Column(Integer, ForeignKey("websites.id"), nullable=True, index=True)
+
+    task_type = Column(SQLEnum(TaskType), nullable=False, index=True)
+    status = Column(SQLEnum(TaskStatus), default=TaskStatus.PENDING, nullable=False, index=True)
+
+    # Task details
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+
+    # Progress tracking
+    progress = Column(Integer, default=0, nullable=False)  # 0-100
+    current_step = Column(String(255), nullable=True)
+    total_steps = Column(Integer, default=1, nullable=False)
+
+    # Task data and result
+    input_data = Column(Text, nullable=True)  # JSON string
+    result_data = Column(Text, nullable=True)  # JSON string
+    error_message = Column(Text, nullable=True)
+
+    # Timestamps
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    started_at = Column(DateTime, nullable=True)
+    completed_at = Column(DateTime, nullable=True)
+
+    # Relationships
+    user = relationship("User")
+    website = relationship("Website")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'website_id': self.website_id,
+            'task_type': self.task_type.value,
+            'status': self.status.value,
+            'title': self.title,
+            'description': self.description,
+            'progress': self.progress,
+            'current_step': self.current_step,
+            'total_steps': self.total_steps,
+            'error_message': self.error_message,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'started_at': self.started_at.isoformat() if self.started_at else None,
+            'completed_at': self.completed_at.isoformat() if self.completed_at else None,
+        }
+
+
+class HostingPlan(Base):
+    """Hosting plans/subscriptions"""
+    __tablename__ = "hosting_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False, unique=True)
+    price = Column(Integer, nullable=False)  # Price in cents
+
+    # Limits
+    max_websites = Column(Integer, nullable=False)
+    storage_gb = Column(Integer, nullable=False)
+    bandwidth_gb = Column(Integer, nullable=False)
+
+    # Features
+    ssl_enabled = Column(Boolean, default=True, nullable=False)
+    backups_enabled = Column(Boolean, default=True, nullable=False)
+    staging_enabled = Column(Boolean, default=False, nullable=False)
+    cdn_enabled = Column(Boolean, default=False, nullable=False)
+
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
+    subscriptions = relationship("Subscription", back_populates="plan")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price / 100,  # Convert cents to dollars
+            'features': {
+                'websites': self.max_websites,
+                'storage': self.storage_gb,
+                'bandwidth': self.bandwidth_gb,
+                'ssl': self.ssl_enabled,
+                'backups': self.backups_enabled,
+                'staging': self.staging_enabled,
+                'cdn': self.cdn_enabled,
+            },
+            'is_active': self.is_active,
+        }
+
+
+class Subscription(Base):
+    """User hosting subscriptions"""
+    __tablename__ = "subscriptions"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    plan_id = Column(Integer, ForeignKey("hosting_plans.id"), nullable=False)
+
+    status = Column(String(20), default="active", nullable=False)  # active, cancelled, suspended
+
+    # Billing
+    current_period_start = Column(DateTime, nullable=False)
+    current_period_end = Column(DateTime, nullable=False)
+    cancel_at_period_end = Column(Boolean, default=False, nullable=False)
+
+    # Timestamps
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    cancelled_at = Column(DateTime, nullable=True)
+
+    # Relationships
+    user = relationship("User")
+    plan = relationship("HostingPlan", back_populates="subscriptions")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'plan': self.plan.to_dict() if self.plan else None,
+            'status': self.status,
+            'current_period_start': self.current_period_start.isoformat() if self.current_period_start else None,
+            'current_period_end': self.current_period_end.isoformat() if self.current_period_end else None,
+            'cancel_at_period_end': self.cancel_at_period_end,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class Domain(Base):
+    """External domains linked to websites"""
+    __tablename__ = "domains"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    website_id = Column(Integer, ForeignKey("websites.id"), nullable=True, index=True)
+
+    domain_name = Column(String(255), nullable=False, unique=True, index=True)
+    is_primary = Column(Boolean, default=False, nullable=False)
+
+    # DNS verification
+    is_verified = Column(Boolean, default=False, nullable=False)
+    verification_token = Column(String(64), nullable=True)
+
+    # SSL
+    ssl_enabled = Column(Boolean, default=False, nullable=False)
+    ssl_expires_at = Column(DateTime, nullable=True)
+
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    verified_at = Column(DateTime, nullable=True)
+
+    # Relationships
+    user = relationship("User")
+    website = relationship("Website")
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'website_id': self.website_id,
+            'domain_name': self.domain_name,
+            'is_primary': self.is_primary,
+            'is_verified': self.is_verified,
+            'ssl_enabled': self.ssl_enabled,
+            'ssl_expires_at': self.ssl_expires_at.isoformat() if self.ssl_expires_at else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'verified_at': self.verified_at.isoformat() if self.verified_at else None,
+        }

@@ -21,7 +21,7 @@ import { environment } from '../environments/environment';
 export class ApiService {
   private baseUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Auth endpoints
   login(credentials: LoginRequest): Observable<AuthResponse> {

@@ -15,13 +15,19 @@
             </a>
 
             <a (click)="linkClicked()" routerLink="/websites" routerLinkActive="active" class="nav-item">
-                <i class="fa-regular fa-newspaper"></i>
+                <i class="fa-solid fa-globe"></i>
                 <span>{{ 'pages.websites' | translate }}</span>
             </a>
 
-            
+            <a (click)="linkClicked()" routerLink="/domains" routerLinkActive="active" class="nav-item">
+                <i class="fa-solid fa-link"></i>
+                <span>{{ 'pages.domains' | translate }}</span>
+            </a>
 
-            
+            <a (click)="linkClicked()" routerLink="/hosting" routerLinkActive="active" class="nav-item">
+                <i class="fa-solid fa-server"></i>
+                <span>{{ 'pages.hosting' | translate }}</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">

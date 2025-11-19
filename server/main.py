@@ -14,6 +14,10 @@ from starlette.requests import Request
 
 from routes.user import router as user_router
 from routes.auth import router as auth_router
+from routes.websites import router as websites_router
+from routes.hosting import router as hosting_router
+from routes.backups import router as backups_router
+from routes.tasks import router as tasks_router
 
 MAX_LINE_LENGTH = 65
 
@@ -95,6 +99,10 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(websites_router, prefix="/api/websites", tags=["Websites"])
+app.include_router(hosting_router, prefix="/api/hosting", tags=["Hosting"])
+app.include_router(backups_router, prefix="/api/backups", tags=["Backups"])
+app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
 
 
 

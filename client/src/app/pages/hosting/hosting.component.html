@@ -1,0 +1,216 @@
+<div class="hosting-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Mon Hébergement</h1>
+      <p>Gérez votre forfait et consultez votre utilisation</p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement des données...</p>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Current Plan Overview -->
+    <div class="current-plan-card">
+      <div class="plan-header">
+        <div>
+          <span class="plan-badge">Forfait actuel</span>
+          <h2>{{ currentPlan.name }}</h2>
+          <p class="plan-price">{{ currentPlan.price }}€ <span>/mois</span></p>
+        </div>
+        <button class="btn-upgrade">
+          <i class="fa-solid fa-arrow-up"></i>
+          Upgrader
+        </button>
+      </div>
+
+      <!-- Usage Stats -->
+      <div class="usage-grid">
+        <!-- Websites Usage -->
+        <div class="usage-card">
+          <div class="usage-header">
+            <div class="usage-icon websites">
+              <i class="fa-solid fa-globe"></i>
+            </div>
+            <div class="usage-info">
+              <h3>Sites Web</h3>
+              <p>{{ currentPlan.currentUsage.websites }} / {{ currentPlan.features.websites }}</p>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [ngClass]="getUsageClass(getUsagePercentage(currentPlan.currentUsage.websites, currentPlan.features.websites))"
+              [style.width.%]="getUsagePercentage(currentPlan.currentUsage.websites, currentPlan.features.websites)">
+            </div>
+          </div>
+          <span class="usage-percentage">
+            {{ getUsagePercentage(currentPlan.currentUsage.websites, currentPlan.features.websites).toFixed(0) }}% utilisé
+          </span>
+        </div>
+
+        <!-- Storage Usage -->
+        <div class="usage-card">
+          <div class="usage-header">
+            <div class="usage-icon storage">
+              <i class="fa-solid fa-hard-drive"></i>
+            </div>
+            <div class="usage-info">
+              <h3>Espace disque</h3>
+              <p>{{ currentPlan.currentUsage.storage.toFixed(2) }} GB / {{ currentPlan.features.storage }} GB</p>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [ngClass]="getUsageClass(getUsagePercentage(currentPlan.currentUsage.storage, currentPlan.features.storage))"
+              [style.width.%]="getUsagePercentage(currentPlan.currentUsage.storage, currentPlan.features.storage)">
+            </div>
+          </div>
+          <span class="usage-percentage">
+            {{ getUsagePercentage(currentPlan.currentUsage.storage, currentPlan.features.storage).toFixed(0) }}% utilisé
+          </span>
+        </div>
+
+        <!-- Bandwidth Usage -->
+        <div class="usage-card">
+          <div class="usage-header">
+            <div class="usage-icon bandwidth">
+              <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </div>
+            <div class="usage-info">
+              <h3>Bande passante</h3>
+              <p>{{ currentPlan.currentUsage.bandwidth.toFixed(2) }} GB / {{ currentPlan.features.bandwidth }} GB</p>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [ngClass]="getUsageClass(getUsagePercentage(currentPlan.currentUsage.bandwidth, currentPlan.features.bandwidth))"
+              [style.width.%]="getUsagePercentage(currentPlan.currentUsage.bandwidth, currentPlan.features.bandwidth)">
+            </div>
+          </div>
+          <span class="usage-percentage">
+            {{ getUsagePercentage(currentPlan.currentUsage.bandwidth, currentPlan.features.bandwidth).toFixed(0) }}% utilisé
+          </span>
+        </div>
+      </div>
+
+      <!-- Features List -->
+      <div class="features-list">
+        <h3>Fonctionnalités incluses</h3>
+        <div class="features-grid">
+          <div class="feature-item">
+            <i class="fa-solid fa-check"></i>
+            <span>SSL gratuit</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-check"></i>
+            <span>Sauvegardes quotidiennes</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-check"></i>
+            <span>Support {{ currentPlan.features.support }}</span>
+          </div>
+          <div class="feature-item">
+            <i class="fa-solid fa-check"></i>
+            <span>Mises à jour automatiques</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Plans -->
+    <div class="plans-section">
+      <h2>Forfaits disponibles</h2>
+      <p>Choisissez le forfait qui correspond à vos besoins</p>
+
+      <div class="plans-grid">
+        <div
+          class="plan-card"
+          *ngFor="let plan of availablePlans"
+          [ngClass]="{'current': isCurrentPlan(plan), 'popular': plan.name === 'Professional'}">
+
+          <div class="plan-badge-container">
+            <span class="current-badge" *ngIf="isCurrentPlan(plan)">Actuel</span>
+            <span class="popular-badge" *ngIf="plan.name === 'Professional'">Populaire</span>
+          </div>
+
+          <h3>{{ plan.name }}</h3>
+          <div class="plan-price-large">
+            <span class="price">{{ plan.price }}€</span>
+            <span class="period">/mois</span>
+          </div>
+
+          <ul class="plan-features">
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>{{ plan.features.websites }} sites web</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>{{ plan.features.storage }} GB de stockage</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>{{ plan.features.bandwidth }} GB de bande passante</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>SSL gratuit</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>Sauvegardes quotidiennes</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-check"></i>
+              <span>Support {{ plan.features.support }}</span>
+            </li>
+          </ul>
+
+          <button
+            class="btn-select-plan"
+            [ngClass]="{'current': isCurrentPlan(plan)}"
+            [disabled]="isCurrentPlan(plan)">
+            <span *ngIf="isCurrentPlan(plan)">Forfait actuel</span>
+            <span *ngIf="!isCurrentPlan(plan)">Choisir ce forfait</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Information -->
+    <div class="billing-section">
+      <h2>Informations de facturation</h2>
+      <div class="billing-card">
+        <div class="billing-item">
+          <span class="label">Prochain paiement</span>
+          <strong>{{ getNextPaymentDate() | date:'d MMMM yyyy' }}</strong>
+        </div>
+        <div class="billing-item">
+          <span class="label">Montant</span>
+          <strong>{{ currentPlan.price }}€</strong>
+        </div>
+        <div class="billing-item">
+          <span class="label">Méthode de paiement</span>
+          <strong>•••• •••• •••• 4242</strong>
+        </div>
+        <div class="billing-actions">
+          <button class="btn-secondary">
+            <i class="fa-solid fa-credit-card"></i>
+            Changer de carte
+          </button>
+          <button class="btn-secondary">
+            <i class="fa-solid fa-file-invoice"></i>
+            Voir les factures
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

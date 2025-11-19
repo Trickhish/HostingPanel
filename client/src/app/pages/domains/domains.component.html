@@ -1,0 +1,210 @@
+<div class="domains-container">
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>Domaines</h1>
+      <p>Gérez vos domaines et liez-les à vos sites</p>
+    </div>
+    <button class="btn-primary" (click)="openAddModal()">
+      <i class="fa-solid fa-plus"></i>
+      Ajouter un domaine
+    </button>
+  </div>
+
+  <!-- How to Get a Domain Section -->
+  <div class="info-card">
+    <div class="info-icon">
+      <i class="fa-solid fa-circle-info"></i>
+    </div>
+    <div class="info-content">
+      <h3>Vous n'avez pas encore de domaine ?</h3>
+      <p>Un nom de domaine est l'adresse de votre site web (ex: monsite.com). Vous pouvez en acheter un chez ces fournisseurs populaires:</p>
+    </div>
+  </div>
+
+  <!-- Domain Providers -->
+  <div class="providers-section">
+    <h2>Fournisseurs de domaines populaires</h2>
+    <div class="providers-grid">
+      <div class="provider-card" *ngFor="let provider of popularProviders">
+        <div class="provider-logo">
+          <img [src]="provider.logo" [alt]="provider.name" />
+        </div>
+        <h3>{{ provider.name }}</h3>
+        <p>Registraire de domaines fiable et abordable</p>
+        <div class="provider-actions">
+          <a [href]="provider.url" target="_blank" rel="noopener" class="btn-secondary">
+            <i class="fa-solid fa-external-link"></i>
+            Visiter
+          </a>
+          <button class="btn-secondary" (click)="openTutorial(provider)">
+            <i class="fa-solid fa-book"></i>
+            Tutoriel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Your Domains -->
+  <div class="domains-section">
+    <h2>Vos domaines</h2>
+
+    <div class="domains-list" *ngIf="domains.length > 0; else noDomains">
+      <div class="domain-card" *ngFor="let domain of domains">
+        <div class="domain-header">
+          <div class="domain-name">
+            <i class="fa-solid fa-globe"></i>
+            <h3>{{ domain.name }}</h3>
+          </div>
+          <div class="domain-status" [ngClass]="getStatusClass(domain.status)">
+            <span class="status-dot"></span>
+            {{ domain.status }}
+          </div>
+        </div>
+
+        <div class="domain-info">
+          <div class="info-item" *ngIf="domain.linkedWebsite">
+            <span class="label">Lié au site:</span>
+            <strong>{{ domain.linkedWebsite }}</strong>
+          </div>
+          <div class="info-item">
+            <span class="label">SSL:</span>
+            <strong [ngClass]="{'success': domain.sslEnabled, 'danger': !domain.sslEnabled}">
+              <i class="fa-solid" [ngClass]="domain.sslEnabled ? 'fa-lock' : 'fa-lock-open'"></i>
+              {{ domain.sslEnabled ? 'Activé' : 'Désactivé' }}
+            </strong>
+          </div>
+          <div class="info-item">
+            <span class="label">Expire dans:</span>
+            <strong [ngClass]="{'danger': getDaysUntilExpiry(domain.expiresAt) < 30}">
+              {{ getDaysUntilExpiry(domain.expiresAt) }} jours
+            </strong>
+          </div>
+        </div>
+
+        <div class="domain-actions">
+          <button class="btn-secondary">
+            <i class="fa-solid fa-link"></i>
+            Lier au site
+          </button>
+          <button class="btn-secondary">
+            <i class="fa-solid fa-cog"></i>
+            DNS
+          </button>
+          <button class="btn-secondary danger">
+            <i class="fa-solid fa-trash"></i>
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noDomains>
+      <div class="empty-state">
+        <i class="fa-solid fa-globe"></i>
+        <h3>Aucun domaine configuré</h3>
+        <p>Ajoutez votre premier domaine pour commencer</p>
+        <button class="btn-primary" (click)="openAddModal()">
+          <i class="fa-solid fa-plus"></i>
+          Ajouter un domaine
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Add Domain Modal -->
+<div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Ajouter un domaine</h2>
+      <button class="close-btn" (click)="closeAddModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="info-box">
+        <i class="fa-solid fa-info-circle"></i>
+        <p>Assurez-vous que votre domaine pointe vers nos serveurs avant de l'ajouter. Consultez nos tutoriels pour savoir comment configurer votre DNS.</p>
+      </div>
+
+      <form (ngSubmit)="addDomain()">
+        <div class="form-group">
+          <label>Nom de domaine *</label>
+          <input
+            type="text"
+            [(ngModel)]="newDomain.name"
+            name="name"
+            placeholder="example.com"
+            required>
+          <small>Entrez votre nom de domaine sans www</small>
+        </div>
+
+        <div class="form-group">
+          <label>Lier à un site (optionnel)</label>
+          <select [(ngModel)]="newDomain.websiteId" name="websiteId">
+            <option [value]="null">Aucun site</option>
+            <!-- Add website options from API -->
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="closeAddModal()">
+            Annuler
+          </button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-plus"></i>
+            Ajouter le domaine
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Tutorial Modal -->
+<div class="modal-overlay" *ngIf="showTutorialModal" (click)="closeTutorialModal()">
+  <div class="modal tutorial-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Configuration DNS - {{ selectedProvider?.name }}</h2>
+      <button class="close-btn" (click)="closeTutorialModal()">
+        <i class="fa-solid fa-times"></i>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="tutorial-intro">
+        <p>Suivez ces étapes pour configurer votre domaine {{ selectedProvider?.name }} :</p>
+      </div>
+
+      <div class="tutorial-steps">
+        <div class="step" *ngFor="let step of selectedProvider?.tutorial; let i = index">
+          <div class="step-number">{{ i + 1 }}</div>
+          <div class="step-content">
+            <p [innerHTML]="step"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tutorial-note">
+        <i class="fa-solid fa-lightbulb"></i>
+        <div>
+          <strong>Note importante:</strong>
+          <p>Remplacez "VOTRE_IP_SERVEUR" par l'adresse IP de votre serveur d'hébergement. Vous pouvez la trouver dans les paramètres de votre compte ou nous contacter pour l'obtenir.</p>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" (click)="closeTutorialModal()">
+          Compris
+        </button>
+        <a [href]="selectedProvider?.url" target="_blank" rel="noopener" class="btn-secondary">
+          <i class="fa-solid fa-external-link"></i>
+          Aller sur {{ selectedProvider?.name }}
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

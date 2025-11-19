@@ -1,0 +1,87 @@
+// Common theme-aware styles that can be imported by components
+
+@mixin card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 16px var(--card-shadow-hover);
+  }
+}
+
+@mixin button-primary {
+  padding: 0.75rem 1.5rem;
+  background: var(--gradient-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@mixin button-secondary {
+  padding: 0.5rem 1rem;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--bg-hover);
+  }
+}
+
+@mixin input {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--inp-bg);
+  border: 1px solid var(--inp-bd);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+}
+
+@mixin status-badge($type) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  @if $type == 'success' {
+    background: var(--status-success-bg);
+    color: var(--status-success-text);
+  } @else if $type == 'warning' {
+    background: var(--status-warning-bg);
+    color: var(--status-warning-text);
+  } @else if $type == 'danger' {
+    background: var(--status-danger-bg);
+    color: var(--status-danger-text);
+  } @else if $type == 'info' {
+    background: var(--status-info-bg);
+    color: var(--status-info-text);
+  }
+}

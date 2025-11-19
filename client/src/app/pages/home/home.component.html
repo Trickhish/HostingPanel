@@ -1,3 +1,173 @@
-<div id="home_content">
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section" *ngIf="authService.currentUser | async as user">
+    <h2>Bienvenue, {{ user.first_name || user.email }}!</h2>
+    <p>Voici un aperçu de votre hébergement</p>
+  </div>
 
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement des données...</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid" *ngIf="!isLoading">
+    <div class="stat-card">
+      <div class="stat-icon websites">
+        <i class="fa-solid fa-globe"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ stats.totalWebsites }}</h3>
+        <p>Sites Web</p>
+        <span class="stat-detail">{{ stats.activeWebsites }} actifs</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon backups">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ stats.totalBackups }}</h3>
+        <p>Sauvegardes</p>
+        <span class="stat-detail">Automatiques</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon disk">
+        <i class="fa-solid fa-hard-drive"></i>
+      </div>
+      <div class="stat-info">
+        <h3>{{ formatBytes(stats.diskUsage) }}</h3>
+        <p>Espace utilisé</p>
+        <span class="stat-detail">sur {{ formatBytes(stats.diskQuota) }}</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon performance">
+        <i class="fa-solid fa-chart-line"></i>
+      </div>
+      <div class="stat-info">
+        <h3>99.9%</h3>
+        <p>Uptime</p>
+        <span class="stat-detail">Ce mois</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid" *ngIf="!isLoading">
+    <!-- Disk Usage Chart -->
+    <div class="card disk-usage-card">
+      <h3>Utilisation de l'espace disque</h3>
+      <div class="progress-circle">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" class="progress-bg"></circle>
+          <circle
+            cx="50"
+            cy="50"
+            r="45"
+            class="progress-bar"
+            [style.stroke-dashoffset]="282.6 - (282.6 * diskUsagePercentage / 100)">
+          </circle>
+        </svg>
+        <div class="progress-text">
+          <span class="percentage">{{ diskUsagePercentage.toFixed(1) }}%</span>
+          <span class="label">utilisé</span>
+        </div>
+      </div>
+      <div class="disk-details">
+        <div class="disk-item">
+          <span>Utilisé:</span>
+          <strong>{{ formatBytes(stats.diskUsage) }}</strong>
+        </div>
+        <div class="disk-item">
+          <span>Disponible:</span>
+          <strong>{{ formatBytes(stats.diskQuota - stats.diskUsage) }}</strong>
+        </div>
+        <div class="disk-item">
+          <span>Total:</span>
+          <strong>{{ formatBytes(stats.diskQuota) }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Websites -->
+    <div class="card websites-card">
+      <div class="card-header">
+        <h3>Vos sites web</h3>
+        <a routerLink="/websites" class="view-all">Voir tout <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+      <div class="websites-list" *ngIf="websites.length > 0; else noWebsites">
+        <div class="website-item" *ngFor="let website of websites.slice(0, 5)">
+          <div class="website-icon">
+            <i class="fa-solid fa-globe"></i>
+          </div>
+          <div class="website-info">
+            <h4>{{ website.name }}</h4>
+            <p>{{ website.site_path }}</p>
+          </div>
+          <div class="website-status" [ngClass]="website.status">
+            <span class="status-dot"></span>
+            {{ website.status }}
+          </div>
+        </div>
+      </div>
+      <ng-template #noWebsites>
+        <div class="empty-state">
+          <i class="fa-solid fa-globe"></i>
+          <p>Aucun site web pour le moment</p>
+          <a routerLink="/websites" class="btn-primary">Créer un site</a>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card activity-card">
+      <h3>Activité récente</h3>
+      <div class="activity-list" *ngIf="recentActivity.length > 0; else noActivity">
+        <div class="activity-item" *ngFor="let activity of recentActivity">
+          <div class="activity-icon">
+            <i class="fa-solid" [ngClass]="activity.icon"></i>
+          </div>
+          <div class="activity-info">
+            <p>{{ activity.message }}</p>
+            <span class="activity-time">{{ activity.time | date:'short' }}</span>
+          </div>
+        </div>
+      </div>
+      <ng-template #noActivity>
+        <div class="empty-state">
+          <i class="fa-solid fa-clock"></i>
+          <p>Aucune activité récente</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card quick-actions-card">
+      <h3>Actions rapides</h3>
+      <div class="quick-actions">
+        <a routerLink="/websites" class="action-btn">
+          <i class="fa-solid fa-plus"></i>
+          <span>Nouveau site</span>
+        </a>
+        <a routerLink="/domains" class="action-btn">
+          <i class="fa-solid fa-link"></i>
+          <span>Lier un domaine</span>
+        </a>
+        <a routerLink="/hosting" class="action-btn">
+          <i class="fa-solid fa-chart-simple"></i>
+          <span>Mon forfait</span>
+        </a>
+        <a routerLink="/settings" class="action-btn">
+          <i class="fa-solid fa-gear"></i>
+          <span>Paramètres</span>
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
