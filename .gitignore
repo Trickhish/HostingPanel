@@ -1,3 +1,5 @@
 __pycache__
 venv
-.envserver/certs/
+.env
+server/certs
+server/cache
