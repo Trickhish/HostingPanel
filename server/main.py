@@ -97,16 +97,7 @@ class RequestLoggerMiddleware(BaseHTTPMiddleware):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(user_router, prefix="/user", tags=["User"])
-app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
-app.include_router(websites_router, prefix="/api/websites", tags=["Websites"])
-app.include_router(hosting_router, prefix="/api/hosting", tags=["Hosting"])
-app.include_router(backups_router, prefix="/api/backups", tags=["Backups"])
-app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
-
-
-
-
+# CORS middleware must be added BEFORE routes
 if (dbg):
     app.add_middleware(
         CORSMiddleware,
@@ -123,12 +114,21 @@ else:
         allow_origins=[
             "https://hosting.austerfortia.fr",
             "https://www.hosting.austerfortia.fr",
-            "https://api.hosting.austerfortia.fr"
+            "https://api.hosting.austerfortia.fr",
+            "http://localhost:4200",  # For local development
         ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Routes (added after middleware)
+app.include_router(user_router, prefix="/user", tags=["User"])
+app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
+app.include_router(websites_router, prefix="/api/websites", tags=["Websites"])
+app.include_router(hosting_router, prefix="/api/hosting", tags=["Hosting"])
+app.include_router(backups_router, prefix="/api/backups", tags=["Backups"])
+app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
 
 # Endpoints
 @app.get("/")
