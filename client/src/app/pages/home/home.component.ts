@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface DashboardStats {
   totalWebsites: number;
@@ -14,7 +15,7 @@ interface DashboardStats {
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

@@ -2,12 +2,12 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1>Sites Web</h1>
-      <p>Gérez tous vos sites WordPress</p>
+      <h1>{{ 'websites.title' | translate }}</h1>
+      <p>{{ 'websites.subtitle' | translate }}</p>
     </div>
     <button class="btn-primary" (click)="openCreateModal()">
       <i class="fa-solid fa-plus"></i>
-      Nouveau Site
+      {{ 'websites.createWebsite' | translate }}
     </button>
   </div>
 
@@ -15,19 +15,19 @@
   <div class="stats-row">
     <div class="stat-item">
       <span class="stat-value">{{ websiteStats.total }}</span>
-      <span class="stat-label">Total</span>
+      <span class="stat-label">{{ 'dashboard.stats.totalWebsites' | translate }}</span>
     </div>
     <div class="stat-item active">
       <span class="stat-value">{{ websiteStats.active }}</span>
-      <span class="stat-label">Actifs</span>
+      <span class="stat-label">{{ 'websites.status.active' | translate }}</span>
     </div>
     <div class="stat-item installing">
       <span class="stat-value">{{ websiteStats.installing }}</span>
-      <span class="stat-label">Installation</span>
+      <span class="stat-label">{{ 'websites.status.installing' | translate }}</span>
     </div>
     <div class="stat-item suspended">
       <span class="stat-value">{{ websiteStats.suspended }}</span>
-      <span class="stat-label">Suspendus</span>
+      <span class="stat-label">{{ 'websites.status.suspended' | translate }}</span>
     </div>
   </div>
 
@@ -39,17 +39,17 @@
         type="text"
         [(ngModel)]="searchTerm"
         (ngModelChange)="onSearchChange()"
-        placeholder="Rechercher un site...">
+        [placeholder]="'websites.search' | translate">
     </div>
 
     <div class="filter-group">
-      <label>Statut:</label>
+      <label>{{ 'websites.filterByStatus' | translate }}:</label>
       <select [(ngModel)]="statusFilter" (ngModelChange)="onStatusFilterChange()">
-        <option value="all">Tous</option>
-        <option value="active">Actifs</option>
-        <option value="installing">Installation</option>
-        <option value="suspended">Suspendus</option>
-        <option value="error">Erreur</option>
+        <option value="all">{{ 'websites.allStatuses' | translate }}</option>
+        <option value="active">{{ 'websites.status.active' | translate }}</option>
+        <option value="installing">{{ 'websites.status.installing' | translate }}</option>
+        <option value="suspended">{{ 'websites.status.suspended' | translate }}</option>
+        <option value="error">{{ 'websites.status.error' | translate }}</option>
       </select>
     </div>
   </div>
@@ -57,7 +57,7 @@
   <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-container">
     <div class="spinner"></div>
-    <p>Chargement des sites...</p>
+    <p>{{ 'common.loading' | translate }}...</p>
   </div>
 
   <!-- Websites Grid -->
@@ -69,7 +69,7 @@
         </div>
         <div class="website-status" [ngClass]="getStatusClass(website.status)">
           <i class="fa-solid" [ngClass]="getStatusIcon(website.status)"></i>
-          {{ website.status }}
+          {{ 'websites.status.' + website.status | translate }}
         </div>
       </div>
 
@@ -92,11 +92,11 @@
       <div class="website-card-footer">
         <button class="btn-secondary" [routerLink]="['/websites', website.id]">
           <i class="fa-solid fa-eye"></i>
-          Voir
+          {{ 'websites.actions.view' | translate }}
         </button>
         <button class="btn-secondary">
           <i class="fa-solid fa-cog"></i>
-          Gérer
+          {{ 'websites.actions.manage' | translate }}
         </button>
       </div>
     </div>
@@ -105,19 +105,19 @@
   <!-- Empty State -->
   <div class="empty-state" *ngIf="!isLoading && filteredWebsites.length === 0 && websites.length === 0">
     <i class="fa-solid fa-globe"></i>
-    <h3>Aucun site web</h3>
-    <p>Commencez par créer votre premier site WordPress</p>
+    <h3>{{ 'websites.noWebsites' | translate }}</h3>
+    <p>{{ 'websites.createFirstWebsite' | translate }}</p>
     <button class="btn-primary" (click)="openCreateModal()">
       <i class="fa-solid fa-plus"></i>
-      Créer un site
+      {{ 'websites.createWebsite' | translate }}
     </button>
   </div>
 
   <!-- No Results -->
   <div class="empty-state" *ngIf="!isLoading && filteredWebsites.length === 0 && websites.length > 0">
     <i class="fa-solid fa-search"></i>
-    <h3>Aucun résultat</h3>
-    <p>Aucun site ne correspond à vos critères de recherche</p>
+    <h3>{{ 'common.noData' | translate }}</h3>
+    <p>{{ 'websites.noWebsites' | translate }}</p>
   </div>
 </div>
 
@@ -125,37 +125,34 @@
 <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Créer un nouveau site</h2>
+      <h2>{{ 'websites.createModal.title' | translate }}</h2>
       <button class="close-btn" (click)="closeCreateModal()">
         <i class="fa-solid fa-times"></i>
       </button>
     </div>
 
     <div class="modal-body">
+      <div *ngIf="createError" class="error-message">
+        <i class="fa-solid fa-exclamation-circle"></i>
+        {{ createError }}
+      </div>
+
       <form (ngSubmit)="createWebsite()">
         <div class="form-group">
-          <label>Nom du site *</label>
+          <label>{{ 'websites.createModal.domainName' | translate }} *</label>
           <input
             type="text"
             [(ngModel)]="newWebsite.name"
             name="name"
-            placeholder="Mon Site WordPress"
+            [placeholder]="'websites.createModal.domainPlaceholder' | translate"
+            [disabled]="isCreating"
             required>
+          <small class="help-text">Enter a valid domain name like example.com</small>
         </div>
 
         <div class="form-group">
-          <label>Domaine</label>
-          <input
-            type="text"
-            [(ngModel)]="newWebsite.domain"
-            name="domain"
-            placeholder="monsite.com">
-          <small>Laissez vide pour utiliser un sous-domaine temporaire</small>
-        </div>
-
-        <div class="form-group">
-          <label>Version PHP</label>
-          <select [(ngModel)]="newWebsite.phpVersion" name="phpVersion">
+          <label>{{ 'websites.createModal.phpVersion' | translate }}</label>
+          <select [(ngModel)]="newWebsite.phpVersion" name="phpVersion" [disabled]="isCreating">
             <option value="7.4">PHP 7.4</option>
             <option value="8.0">PHP 8.0</option>
             <option value="8.1">PHP 8.1</option>
@@ -165,12 +162,12 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" (click)="closeCreateModal()">
-            Annuler
+          <button type="button" class="btn-secondary" (click)="closeCreateModal()" [disabled]="isCreating">
+            {{ 'websites.createModal.cancel' | translate }}
           </button>
-          <button type="submit" class="btn-primary">
-            <i class="fa-solid fa-plus"></i>
-            Créer le site
+          <button type="submit" class="btn-primary" [disabled]="isCreating">
+            <i class="fa-solid" [ngClass]="isCreating ? 'fa-spinner fa-spin' : 'fa-plus'"></i>
+            {{ isCreating ? ('common.loading' | translate) : ('websites.createModal.create' | translate) }}
           </button>
         </div>
       </form>

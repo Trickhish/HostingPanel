@@ -11,7 +11,8 @@ import {
   ResetPasswordRequest,
   ApiResponse,
   User,
-  Website
+  Website,
+  CreateWebsiteRequest
 } from './models/api.models';
 import { environment } from '../environments/environment';
 
@@ -59,13 +60,21 @@ export class ApiService {
     return this.http.post<ApiResponse>(`${this.baseUrl}/auth/reset-password`, data);
   }
 
-  // Website endpoints
-  getWebsites(): Observable<{ success: boolean; websites: Website[] }> {
-    return this.http.get<{ success: boolean; websites: Website[] }>(`${this.baseUrl}/auth/api/websites`);
-  }
-
   // Admin endpoints
   getAllUsers(): Observable<{ success: boolean; users: User[] }> {
-    return this.http.get<{ success: boolean; users: User[] }>(`${this.baseUrl}/auth/api/admin/users`);
+    return this.http.get<{ success: boolean; users: User[] }>(`${this.baseUrl}/admin/users`);
+  }
+
+
+  // Website endpoints
+  getWebsites(): Observable<{ success: boolean; websites: Website[] }> {
+    return this.http.get<{ success: boolean; websites: Website[] }>(`${this.baseUrl}/websites`);
+  }
+
+  createWebsite(data: CreateWebsiteRequest): Observable<{ success: boolean; website: Website; message: string }> {
+    return this.http.post<{ success: boolean; website: Website; message: string }>(
+      `${this.baseUrl}/websites`,
+      data
+    );
   }
 }

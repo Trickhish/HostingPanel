@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { ApiService } from '../../api.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -23,7 +24,7 @@ interface HostingPlan {
 
 @Component({
   selector: 'app-hosting',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './hosting.component.html',
   styleUrl: './hosting.component.scss'
 })

@@ -1,10 +1,263 @@
 {
-    "pages": {
-        "dashboard": "Tableau de bord",
-        "websites": "Sites Web",
-        "domains": "Domaines",
-        "hosting": "Hébergement",
-        "settings": "Paramètres",
-        "logout": "Se déconnecter"
+  "common": {
+    "welcome": "Bienvenue",
+    "loading": "Chargement",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "create": "Créer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "viewAll": "Voir tout",
+    "noData": "Aucune donnée disponible",
+    "error": "Erreur",
+    "success": "Succès",
+    "warning": "Attention",
+    "info": "Information"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "websites": "Sites Web",
+    "domains": "Domaines",
+    "hosting": "Hébergement",
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Aperçu de votre compte d'hébergement",
+    "stats": {
+      "totalWebsites": "Total des sites",
+      "activeWebsites": "Sites actifs",
+      "totalBackups": "Total des sauvegardes",
+      "diskUsage": "Utilisation du disque"
+    },
+    "diskUsage": {
+      "title": "Utilisation du disque",
+      "used": "Utilisé",
+      "available": "Disponible",
+      "total": "Total",
+      "percentage": "Utilisation"
+    },
+    "recentWebsites": {
+      "title": "Sites récents",
+      "emptyMessage": "Aucun site pour le moment",
+      "createFirst": "Créez votre premier site pour commencer"
+    },
+    "activity": {
+      "title": "Activité récente",
+      "noActivity": "Aucune activité récente"
+    },
+    "quickActions": {
+      "title": "Actions rapides",
+      "newWebsite": "Nouveau site",
+      "createBackup": "Créer une sauvegarde",
+      "viewDomains": "Voir les domaines",
+      "managePlan": "Gérer l'abonnement"
     }
+  },
+  "websites": {
+    "title": "Sites Web",
+    "subtitle": "Gérez vos sites web",
+    "search": "Rechercher des sites...",
+    "filterByStatus": "Filtrer par statut",
+    "allStatuses": "Tous les statuts",
+    "createWebsite": "Créer un site",
+    "noWebsites": "Aucun site trouvé",
+    "createFirstWebsite": "Créez votre premier site",
+    "status": {
+      "active": "Actif",
+      "installing": "Installation",
+      "suspended": "Suspendu",
+      "error": "Erreur",
+      "migrating": "Migration",
+      "deleting": "Suppression"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "manage": "Gérer"
+    },
+    "createModal": {
+      "title": "Créer un nouveau site",
+      "domainName": "Nom de domaine",
+      "domainPlaceholder": "exemple.com",
+      "phpVersion": "Version PHP",
+      "installWordPress": "Installer WordPress",
+      "cancel": "Annuler",
+      "create": "Créer le site"
+    },
+    "details": {
+      "diskUsage": "Utilisation du disque",
+      "created": "Créé le",
+      "lastBackup": "Dernière sauvegarde"
+    }
+  },
+  "domains": {
+    "title": "Domaines",
+    "subtitle": "Gérez vos domaines et liez-les à vos sites",
+    "addDomain": "Ajouter un domaine",
+    "dontHaveDomain": "Vous n'avez pas encore de domaine ?",
+    "domainInfo": "Un nom de domaine est l'adresse de votre site web (ex: monsite.com). Vous pouvez en acheter un chez ces fournisseurs populaires:",
+    "popularProviders": "Fournisseurs de domaines populaires",
+    "providerDescription": "Registraire de domaines fiable et abordable",
+    "visit": "Visiter",
+    "tutorial": "Tutoriel",
+    "yourDomains": "Vos domaines",
+    "noDomains": "Aucun domaine configuré",
+    "addFirstDomain": "Ajoutez votre premier domaine pour commencer",
+    "linkedTo": "Lié au site:",
+    "ssl": "SSL",
+    "enabled": "Activé",
+    "disabled": "Désactivé",
+    "expiresIn": "Expire dans:",
+    "days": "jours",
+    "linkToSite": "Lier au site",
+    "dns": "DNS",
+    "delete": "Supprimer",
+    "status": {
+      "active": "Actif",
+      "pending": "En attente",
+      "error": "Erreur"
+    },
+    "addModal": {
+      "title": "Ajouter un domaine",
+      "infoMessage": "Assurez-vous que votre domaine pointe vers nos serveurs avant de l'ajouter. Consultez nos tutoriels pour savoir comment configurer votre DNS.",
+      "domainName": "Nom de domaine",
+      "domainPlaceholder": "exemple.com",
+      "domainHelp": "Entrez votre nom de domaine sans www",
+      "linkToWebsite": "Lier à un site (optionnel)",
+      "noSite": "Aucun site",
+      "cancel": "Annuler",
+      "add": "Ajouter le domaine"
+    },
+    "tutorialModal": {
+      "title": "Configuration DNS",
+      "intro": "Suivez ces étapes pour configurer votre domaine",
+      "importantNote": "Note importante:",
+      "noteContent": "Remplacez \"VOTRE_IP_SERVEUR\" par l'adresse IP de votre serveur d'hébergement. Vous pouvez la trouver dans les paramètres de votre compte ou nous contacter pour l'obtenir.",
+      "understood": "Compris",
+      "goTo": "Aller sur"
+    }
+  },
+  "hosting": {
+    "title": "Mon Hébergement",
+    "subtitle": "Gérez votre forfait et consultez votre utilisation",
+    "currentPlan": "Forfait actuel",
+    "upgrade": "Upgrader",
+    "perMonth": "/mois",
+    "usage": {
+      "websites": "Sites Web",
+      "storage": "Espace disque",
+      "bandwidth": "Bande passante",
+      "of": "sur",
+      "used": "utilisé"
+    },
+    "features": {
+      "title": "Fonctionnalités incluses",
+      "freeSSL": "SSL gratuit",
+      "dailyBackups": "Sauvegardes quotidiennes",
+      "support": "Support",
+      "autoUpdates": "Mises à jour automatiques",
+      "backups": "Sauvegardes automatiques"
+    },
+    "plans": {
+      "title": "Forfaits disponibles",
+      "subtitle": "Choisissez le forfait qui correspond à vos besoins",
+      "popular": "Populaire",
+      "current": "Actuel",
+      "currentPlan": "Forfait actuel",
+      "selectPlan": "Choisir ce forfait",
+      "websitesCount": "sites web",
+      "storageUnit": "de stockage",
+      "bandwidthUnit": "de bande passante"
+    },
+    "billing": {
+      "title": "Informations de facturation",
+      "nextPayment": "Prochain paiement",
+      "amount": "Montant",
+      "paymentMethod": "Méthode de paiement",
+      "changeCard": "Changer de carte",
+      "viewInvoices": "Voir les factures"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez vos préférences de compte",
+    "appearance": {
+      "title": "Apparence",
+      "theme": "Thème",
+      "lightMode": "Mode clair",
+      "darkMode": "Mode sombre"
+    },
+    "language": {
+      "title": "Langue",
+      "selectLanguage": "Sélectionner la langue",
+      "english": "English",
+      "french": "Français"
+    },
+    "account": {
+      "title": "Paramètres du compte",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "changePassword": "Changer le mot de passe",
+      "twoFactor": "Authentification à deux facteurs",
+      "enable": "Activer",
+      "disable": "Désactiver"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "emailNotifications": "Notifications par e-mail",
+      "websiteUpdates": "Mises à jour des sites",
+      "backupAlerts": "Alertes de sauvegarde",
+      "billingReminders": "Rappels de facturation",
+      "securityAlerts": "Alertes de sécurité"
+    },
+    "dangerZone": {
+      "title": "Zone dangereuse",
+      "deleteAccount": "Supprimer le compte",
+      "deleteWarning": "Supprimer définitivement votre compte et toutes les données"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Se connecter",
+      "subtitle": "Bon retour parmi nous",
+      "email": "Adresse e-mail",
+      "password": "Mot de passe",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié ?",
+      "signIn": "Se connecter",
+      "noAccount": "Pas encore de compte ?",
+      "signUp": "S'inscrire"
+    },
+    "errors": {
+      "invalidCredentials": "E-mail ou mot de passe invalide",
+      "accountLocked": "Compte verrouillé. Veuillez réessayer plus tard.",
+      "networkError": "Erreur réseau. Vérifiez votre connexion."
+    }
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente",
+    "suspended": "Suspendu",
+    "error": "Erreur"
+  },
+  "messages": {
+    "websiteCreated": "Site créé avec succès",
+    "websiteDeleted": "Site supprimé avec succès",
+    "backupCreated": "Sauvegarde créée avec succès",
+    "settingsSaved": "Paramètres enregistrés avec succès",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ceci ?",
+    "operationSuccess": "Opération réussie",
+    "operationFailed": "Opération échouée. Veuillez réessayer."
+  }
 }

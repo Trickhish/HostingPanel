@@ -11,22 +11,22 @@
         <nav class="nav-menu">
             <a (click)="linkClicked()" routerLink="/dashboard" routerLinkActive="active" class="nav-item">
                 <i class="fa-solid fa-chart-line"></i>
-                <span>{{ 'pages.dashboard' | translate }}</span>
+                <span>{{ 'nav.dashboard' | translate }}</span>
             </a>
 
             <a (click)="linkClicked()" routerLink="/websites" routerLinkActive="active" class="nav-item">
                 <i class="fa-solid fa-globe"></i>
-                <span>{{ 'pages.websites' | translate }}</span>
+                <span>{{ 'nav.websites' | translate }}</span>
             </a>
 
             <a (click)="linkClicked()" routerLink="/domains" routerLinkActive="active" class="nav-item">
                 <i class="fa-solid fa-link"></i>
-                <span>{{ 'pages.domains' | translate }}</span>
+                <span>{{ 'nav.domains' | translate }}</span>
             </a>
 
             <a (click)="linkClicked()" routerLink="/hosting" routerLinkActive="active" class="nav-item">
                 <i class="fa-solid fa-server"></i>
-                <span>{{ 'pages.hosting' | translate }}</span>
+                <span>{{ 'nav.hosting' | translate }}</span>
             </a>
         </nav>
 
@@ -34,12 +34,12 @@
             <nav class="bottom-nav">
                 <a (click)="linkClicked()" routerLink="/settings" routerLinkActive="active" class="nav-item">
                     <i class="fa-solid fa-gear"></i>
-                    <span>{{ 'pages.settings' | translate }}</span>
+                    <span>{{ 'nav.settings' | translate }}</span>
                 </a>
 
                 <a (click)="logout()" class="nav-item">
                     <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>{{ 'pages.logout' | translate }}</span>
+                    <span>{{ 'nav.logout' | translate }}</span>
                 </a>
             </nav>
         </div>

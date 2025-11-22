@@ -95,3 +95,9 @@ export interface Website {
   created_at: string;
   suspended_at?: string;
 }
+
+export interface CreateWebsiteRequest {
+  name: string;
+  php_version?: string;
+  install_wordpress?: boolean;
+}

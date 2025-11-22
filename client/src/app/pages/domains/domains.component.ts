@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 interface Domain {
   id: number;
@@ -20,7 +21,7 @@ interface DomainProvider {
 
 @Component({
   selector: 'app-domains',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './domains.component.html',
   styleUrl: './domains.component.scss'
 })

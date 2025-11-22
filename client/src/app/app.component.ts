@@ -15,10 +15,22 @@ import { Theme, ThemeService } from './theme.service';
 export class AppComponent {
   constructor(private translate: TranslateService) {
     translate.addLangs(['en', 'fr']);
-    
-    // Use browser language or default
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang?.match(/en|fr|/) ? browserLang : 'fr');
+    translate.setDefaultLang('en');
+
+    // First check localStorage for saved preference
+    const savedLang = localStorage.getItem('preferredLanguage');
+
+    if (savedLang && ['en', 'fr'].includes(savedLang)) {
+      // Use saved language preference
+      translate.use(savedLang);
+    } else {
+      // Fallback to browser language or default
+      const browserLang = translate.getBrowserLang();
+      const langToUse = browserLang?.match(/en|fr/) ? browserLang : 'en';
+      translate.use(langToUse);
+      // Save the initial language choice
+      localStorage.setItem('preferredLanguage', langToUse);
+    }
   }
 
   switchLanguage(lang: string) {

@@ -2,12 +2,12 @@
   <!-- Header -->
   <div class="page-header">
     <div>
-      <h1>Domaines</h1>
-      <p>Gérez vos domaines et liez-les à vos sites</p>
+      <h1>{{ 'domains.title' | translate }}</h1>
+      <p>{{ 'domains.subtitle' | translate }}</p>
     </div>
     <button class="btn-primary" (click)="openAddModal()">
       <i class="fa-solid fa-plus"></i>
-      Ajouter un domaine
+      {{ 'domains.addDomain' | translate }}
     </button>
   </div>
 
@@ -17,29 +17,29 @@
       <i class="fa-solid fa-circle-info"></i>
     </div>
     <div class="info-content">
-      <h3>Vous n'avez pas encore de domaine ?</h3>
-      <p>Un nom de domaine est l'adresse de votre site web (ex: monsite.com). Vous pouvez en acheter un chez ces fournisseurs populaires:</p>
+      <h3>{{ 'domains.dontHaveDomain' | translate }}</h3>
+      <p>{{ 'domains.domainInfo' | translate }}</p>
     </div>
   </div>
 
   <!-- Domain Providers -->
   <div class="providers-section">
-    <h2>Fournisseurs de domaines populaires</h2>
+    <h2>{{ 'domains.popularProviders' | translate }}</h2>
     <div class="providers-grid">
       <div class="provider-card" *ngFor="let provider of popularProviders">
         <div class="provider-logo">
           <img [src]="provider.logo" [alt]="provider.name" />
         </div>
         <h3>{{ provider.name }}</h3>
-        <p>Registraire de domaines fiable et abordable</p>
+        <p>{{ 'domains.providerDescription' | translate }}</p>
         <div class="provider-actions">
           <a [href]="provider.url" target="_blank" rel="noopener" class="btn-secondary">
             <i class="fa-solid fa-external-link"></i>
-            Visiter
+            {{ 'domains.visit' | translate }}
           </a>
           <button class="btn-secondary" (click)="openTutorial(provider)">
             <i class="fa-solid fa-book"></i>
-            Tutoriel
+            {{ 'domains.tutorial' | translate }}
           </button>
         </div>
       </div>
@@ -48,7 +48,7 @@
 
   <!-- Your Domains -->
   <div class="domains-section">
-    <h2>Vos domaines</h2>
+    <h2>{{ 'domains.yourDomains' | translate }}</h2>
 
     <div class="domains-list" *ngIf="domains.length > 0; else noDomains">
       <div class="domain-card" *ngFor="let domain of domains">
@@ -59,26 +59,26 @@
           </div>
           <div class="domain-status" [ngClass]="getStatusClass(domain.status)">
             <span class="status-dot"></span>
-            {{ domain.status }}
+            {{ 'domains.status.' + domain.status | translate }}
           </div>
         </div>
 
         <div class="domain-info">
           <div class="info-item" *ngIf="domain.linkedWebsite">
-            <span class="label">Lié au site:</span>
+            <span class="label">{{ 'domains.linkedTo' | translate }}</span>
             <strong>{{ domain.linkedWebsite }}</strong>
           </div>
           <div class="info-item">
-            <span class="label">SSL:</span>
+            <span class="label">{{ 'domains.ssl' | translate }}:</span>
             <strong [ngClass]="{'success': domain.sslEnabled, 'danger': !domain.sslEnabled}">
               <i class="fa-solid" [ngClass]="domain.sslEnabled ? 'fa-lock' : 'fa-lock-open'"></i>
-              {{ domain.sslEnabled ? 'Activé' : 'Désactivé' }}
+              {{ domain.sslEnabled ? ('domains.enabled' | translate) : ('domains.disabled' | translate) }}
             </strong>
           </div>
           <div class="info-item">
-            <span class="label">Expire dans:</span>
+            <span class="label">{{ 'domains.expiresIn' | translate }}</span>
             <strong [ngClass]="{'danger': getDaysUntilExpiry(domain.expiresAt) < 30}">
-              {{ getDaysUntilExpiry(domain.expiresAt) }} jours
+              {{ getDaysUntilExpiry(domain.expiresAt) }} {{ 'domains.days' | translate }}
             </strong>
           </div>
         </div>
@@ -86,15 +86,15 @@
         <div class="domain-actions">
           <button class="btn-secondary">
             <i class="fa-solid fa-link"></i>
-            Lier au site
+            {{ 'domains.linkToSite' | translate }}
           </button>
           <button class="btn-secondary">
             <i class="fa-solid fa-cog"></i>
-            DNS
+            {{ 'domains.dns' | translate }}
           </button>
           <button class="btn-secondary danger">
             <i class="fa-solid fa-trash"></i>
-            Supprimer
+            {{ 'domains.delete' | translate }}
           </button>
         </div>
       </div>
@@ -103,11 +103,11 @@
     <ng-template #noDomains>
       <div class="empty-state">
         <i class="fa-solid fa-globe"></i>
-        <h3>Aucun domaine configuré</h3>
-        <p>Ajoutez votre premier domaine pour commencer</p>
+        <h3>{{ 'domains.noDomains' | translate }}</h3>
+        <p>{{ 'domains.addFirstDomain' | translate }}</p>
         <button class="btn-primary" (click)="openAddModal()">
           <i class="fa-solid fa-plus"></i>
-          Ajouter un domaine
+          {{ 'domains.addDomain' | translate }}
         </button>
       </div>
     </ng-template>
@@ -118,7 +118,7 @@
 <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
   <div class="modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Ajouter un domaine</h2>
+      <h2>{{ 'domains.addModal.title' | translate }}</h2>
       <button class="close-btn" (click)="closeAddModal()">
         <i class="fa-solid fa-times"></i>
       </button>
@@ -127,36 +127,36 @@
     <div class="modal-body">
       <div class="info-box">
         <i class="fa-solid fa-info-circle"></i>
-        <p>Assurez-vous que votre domaine pointe vers nos serveurs avant de l'ajouter. Consultez nos tutoriels pour savoir comment configurer votre DNS.</p>
+        <p>{{ 'domains.addModal.infoMessage' | translate }}</p>
       </div>
 
       <form (ngSubmit)="addDomain()">
         <div class="form-group">
-          <label>Nom de domaine *</label>
+          <label>{{ 'domains.addModal.domainName' | translate }} *</label>
           <input
             type="text"
             [(ngModel)]="newDomain.name"
             name="name"
-            placeholder="example.com"
+            [placeholder]="'domains.addModal.domainPlaceholder' | translate"
             required>
-          <small>Entrez votre nom de domaine sans www</small>
+          <small>{{ 'domains.addModal.domainHelp' | translate }}</small>
         </div>
 
         <div class="form-group">
-          <label>Lier à un site (optionnel)</label>
+          <label>{{ 'domains.addModal.linkToWebsite' | translate }}</label>
           <select [(ngModel)]="newDomain.websiteId" name="websiteId">
-            <option [value]="null">Aucun site</option>
+            <option [value]="null">{{ 'domains.addModal.noSite' | translate }}</option>
             <!-- Add website options from API -->
           </select>
         </div>
 
         <div class="modal-actions">
           <button type="button" class="btn-secondary" (click)="closeAddModal()">
-            Annuler
+            {{ 'domains.addModal.cancel' | translate }}
           </button>
           <button type="submit" class="btn-primary">
             <i class="fa-solid fa-plus"></i>
-            Ajouter le domaine
+            {{ 'domains.addModal.add' | translate }}
           </button>
         </div>
       </form>
@@ -168,7 +168,7 @@
 <div class="modal-overlay" *ngIf="showTutorialModal" (click)="closeTutorialModal()">
   <div class="modal tutorial-modal" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Configuration DNS - {{ selectedProvider?.name }}</h2>
+      <h2>{{ 'domains.tutorialModal.title' | translate }} - {{ selectedProvider?.name }}</h2>
       <button class="close-btn" (click)="closeTutorialModal()">
         <i class="fa-solid fa-times"></i>
       </button>
@@ -176,7 +176,7 @@
 
     <div class="modal-body">
       <div class="tutorial-intro">
-        <p>Suivez ces étapes pour configurer votre domaine {{ selectedProvider?.name }} :</p>
+        <p>{{ 'domains.tutorialModal.intro' | translate }} {{ selectedProvider?.name }} :</p>
       </div>
 
       <div class="tutorial-steps">
@@ -191,18 +191,18 @@
       <div class="tutorial-note">
         <i class="fa-solid fa-lightbulb"></i>
         <div>
-          <strong>Note importante:</strong>
-          <p>Remplacez "VOTRE_IP_SERVEUR" par l'adresse IP de votre serveur d'hébergement. Vous pouvez la trouver dans les paramètres de votre compte ou nous contacter pour l'obtenir.</p>
+          <strong>{{ 'domains.tutorialModal.importantNote' | translate }}</strong>
+          <p>{{ 'domains.tutorialModal.noteContent' | translate }}</p>
         </div>
       </div>
 
       <div class="modal-actions">
         <button class="btn-primary" (click)="closeTutorialModal()">
-          Compris
+          {{ 'domains.tutorialModal.understood' | translate }}
         </button>
         <a [href]="selectedProvider?.url" target="_blank" rel="noopener" class="btn-secondary">
           <i class="fa-solid fa-external-link"></i>
-          Aller sur {{ selectedProvider?.name }}
+          {{ 'domains.tutorialModal.goTo' | translate }} {{ selectedProvider?.name }}
         </a>
       </div>
     </div>

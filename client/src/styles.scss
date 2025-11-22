@@ -23,3 +23,32 @@ button {
     background-color: var(--accent);
     backface-visibility: hidden;
 }
+
+// Dark mode styles for ng-zorro select dropdown
+.ant-select-dropdown {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 4px 12px var(--card-shadow) !important;
+
+    .ant-select-item {
+        color: var(--text-primary) !important;
+
+        &:hover {
+            background: var(--bg-hover) !important;
+        }
+
+        &.ant-select-item-option-selected {
+            background: var(--bg-tertiary) !important;
+            color: var(--accent) !important;
+            font-weight: 600;
+        }
+
+        &.ant-select-item-option-active {
+            background: var(--bg-secondary) !important;
+        }
+    }
+
+    .ant-select-item-option-content {
+        color: var(--text-primary) !important;
+    }
+}
