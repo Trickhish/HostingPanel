@@ -1,7 +1,3 @@
-"""
-Background task queue system with real-time progress updates
-"""
-
 import asyncio
 import json
 from datetime import datetime
@@ -32,7 +28,9 @@ class TaskQueue:
         website_id: int = None,
         input_data: dict = None
     ) -> Task:
-        """Create and enqueue a new task"""
+
+        print(f"➕ New {task_type} task: {title}")
+
         with get_db() as db:
             task = Task(
                 user_id=user_id,

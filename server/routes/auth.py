@@ -6,6 +6,7 @@ from typing import Optional
 #import src.crypto as crypto
 from src.crypto import AuthService, AuthError, extract_token_from_header
 from src.models import *
+from src.database import get_db
 
 router = APIRouter()
 
@@ -278,17 +279,18 @@ async def logout(current_user: User = Depends(get_current_user)):
 @router.get("/api/websites", response_model=dict)
 async def get_websites(current_user: User = Depends(get_current_user)):
     """Get user's websites"""
-    if current_user.is_admin():
-        # Admin can see all websites
-        websites = current_user.websites
-    else:
-        # Regular users see only their websites
-        websites = current_user.websites
-    
-    return {
-        "success": True,
-        "websites": [w.to_dict() for w in websites]
-    }
+    with get_db() as db:
+        if current_user.is_admin():
+            # Admin can see all websites
+            websites = db.query(Website).all()
+        else:
+            # Regular users see only their websites
+            websites = db.query(Website).filter(Website.user_id == current_user.id).all()
+
+        return {
+            "success": True,
+            "websites": [w.to_dict() for w in websites]
+        }
 
 
 # Admin-only route example

@@ -125,10 +125,10 @@ else:
 # Routes (added after middleware)
 app.include_router(user_router, prefix="/user", tags=["User"])
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
-app.include_router(websites_router, prefix="/api/websites", tags=["Websites"])
-app.include_router(hosting_router, prefix="/api/hosting", tags=["Hosting"])
-app.include_router(backups_router, prefix="/api/backups", tags=["Backups"])
-app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
+app.include_router(websites_router, prefix="/websites", tags=["Websites"])
+app.include_router(hosting_router, prefix="/hosting", tags=["Hosting"])
+app.include_router(backups_router, prefix="/backups", tags=["Backups"])
+app.include_router(tasks_router, prefix="/tasks", tags=["Tasks"])
 
 # Endpoints
 @app.get("/")

@@ -37,7 +37,7 @@ class UpdateWebsiteRequest(BaseModel):
     backup_frequency: Optional[str] = None
 
 
-@router.get("/websites", response_model=dict)
+@router.get("", response_model=dict)
 async def get_websites(
     status_filter: Optional[str] = None,
     current_user: User = Depends(get_current_user)
@@ -64,7 +64,7 @@ async def get_websites(
         }
 
 
-@router.get("/websites/{website_id}", response_model=dict)
+@router.get("/{website_id}", response_model=dict)
 async def get_website(
     website_id: int,
     current_user: User = Depends(get_current_user)
@@ -88,7 +88,7 @@ async def get_website(
         }
 
 
-@router.post("/websites", response_model=dict, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def create_website(
     data: CreateWebsiteRequest,
     current_user: User = Depends(get_current_user)
@@ -138,7 +138,7 @@ async def create_website(
     }
 
 
-@router.put("/websites/{website_id}", response_model=dict)
+@router.put("/{website_id}", response_model=dict)
 async def update_website(
     website_id: int,
     data: UpdateWebsiteRequest,
@@ -173,7 +173,7 @@ async def update_website(
         }
 
 
-@router.delete("/websites/{website_id}", response_model=dict)
+@router.delete("/{website_id}", response_model=dict)
 async def delete_website(
     website_id: int,
     current_user: User = Depends(get_current_user)
@@ -212,7 +212,7 @@ async def delete_website(
     }
 
 
-@router.post("/websites/{website_id}/suspend", response_model=dict)
+@router.post("/{website_id}/suspend", response_model=dict)
 async def suspend_website(
     website_id: int,
     current_user: User = Depends(get_current_admin_user)  # Admin only
@@ -238,7 +238,7 @@ async def suspend_website(
         }
 
 
-@router.post("/websites/{website_id}/activate", response_model=dict)
+@router.post("/{website_id}/activate", response_model=dict)
 async def activate_website(
     website_id: int,
     current_user: User = Depends(get_current_admin_user)  # Admin only
@@ -263,7 +263,7 @@ async def activate_website(
         }
 
 
-@router.get("/websites/{website_id}/stats", response_model=dict)
+@router.get("/{website_id}/stats", response_model=dict)
 async def get_website_stats(
     website_id: int,
     current_user: User = Depends(get_current_user)
