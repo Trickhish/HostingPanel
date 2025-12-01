@@ -20,7 +20,7 @@ db_url = URL.create(
     drivername="mysql+pymysql",
     username=db_user,
     password=db_pass,
-    host="localhost",
+    host=db_host,
     database=db_name
 ).render_as_string(hide_password=False)
 
